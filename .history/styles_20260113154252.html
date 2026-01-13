@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="de">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Styles Gallery - THE SOHO | Moderne Haarschnitte & Inspirationen</title>
+    <meta name="description"
+        content="Entdecke unsere Style-Galerie mit modernen Haarschnitten und Frisuren. Lass dich inspirieren für deinen nächsten Look bei THE SOHO Krefeld.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600;700&family=Montserrat:wght@300;400;500;600&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <a href="home.html" class="logo">
+                <h1>THE SOHO</h1>
+                <p class="tagline">hairdressing</p>
+            </a>
+            <button class="mobile-menu-toggle" aria-label="Toggle menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            <nav class="nav">
+                <a href="home.html">Home</a>
+                <a href="styles.html" class="active">Styles</a>
+                <a href="balayage.html">Balayage</a>
+                <a href="team.html">Team</a>
+                <a href="hair-systems.html">Hair Systems</a>
+                <a href="preisliste.html">Preisliste</a>
+                <a href="contact.html">Kontakt</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-overlay"></div>
+        <div class="hero-content">
+            <h2 class="hero-title">Unsere Styles</h2>
+            <p class="hero-subtitle">Entdecke moderne Haarschnitte und finde deine Inspiration</p>
+        </div>
+    </section>
+
+    <!-- Intro Section -->
+    <section class="intro-section">
+        <div class="container">
+            <div class="intro-content">
+                <span class="section-label">Style Gallery</span>
+                <h2 class="section-title">Jeder Haarschnitt ist einzigartig</h2>
+                <p class="section-description">
+                    Das Herzstück eines jeden Haarschnitts sind die unterschiedlichen Formen und Texturen.
+                    Bei THE SOHO helfen wir Dir, Deinen individuellen Stil zu finden. Denn jeder Haartyp ist anders
+                    und jeder Haarschnitt ist einzigartig.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Filter Section -->
+    <section class="filter-section">
+        <div class="container">
+            <div class="filter-buttons">
+                <button class="filter-btn active" data-filter="all">Alle Styles</button>
+                <button class="filter-btn" data-filter="damen">Damen</button>
+                <button class="filter-btn" data-filter="herren">Herren</button>
+                <button class="filter-btn" data-filter="color">Farbe</button>
+                <button class="filter-btn" data-filter="short">Kurzhaar</button>
+                <button class="filter-btn" data-filter="long">Langhaar</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Gallery Grid -->
+    <section class="gallery-section">
+        <div class="container">
+            <div class="gallery-grid">
+                <!-- Gallery Item 1 -->
+                <div class="gallery-item" data-category="damen long">
+                    <div class="gallery-image">
+                        <img src="https://images.unsplash.com/photo-1595475884562-073c30d45670?w=600&q=80" alt="Beach Waves" style="width: 100%; height: 350px; object-fit: cover; border-radius: 15px;">
+                        <div class="gallery-overlay">
+                            <h3>Beach Waves</h3>
+                            <p>Langes Haar mit natürlichen Wellen</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Gallery Item 2 -->
+                <div class="gallery-item" data-category="damen color">
+                    <div class="gallery-image">
+                        <img src="https://images.unsplash.com/photo-1522337094846-8a818192de1f?w=600&q=80" alt="Balayage Highlight" style="width: 100%; height: 350px; object-fit: cover; border-radius: 15px;">
+                        <div class="gallery-overlay">
+                            <h3>Balayage Highlight</h3>
+                            <p>Natürliche Balayage-Technik</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Gallery Item 3 -->
+                <div class="gallery-item" data-category="herren short">
+                    <div class="gallery-image">
+                        <div class="image-placeholder">
+                            <svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="1">
+                                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                                <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                                <polyline points="21 15 16 10 5 21"></polyline>
+                            </svg>
+                        <img src="https://images.unsplash.com/photo-1621605815971-fbc98d665033?w=600&q=80" alt="Modern Fade" style="width: 100%; height: 350px; object-fit: cover; border-radius: 15px;"
+                <!-- Gallery Item 4 -->
+                <div class="gallery-item" data-category="damen short">
+                    <div class="gallery-image">
+                        <div class="image-placeholder">
+                            <svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="1">
+                                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                                <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                                <polyline points="21 15 16 10 5 21"></polyline>
+                            </svg>
+                        <img src="https://images.unsplash.com/photo-1634449571010-02389ed0f9b0?w=600&q=80" alt="Pixie Cut" style="width: 100%; height: 350px; object-fit: cover; border-radius: 15px;"
+                <!-- Gallery Item 5 -->
+                <div class="gallery-item" data-category="damen long color">
+                    <div class="gallery-image">
+                        <div class="image-placeholder">
+                            <svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="1">
+                                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                                <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                                <polyline points="21 15 16 10 5 21"></polyline>
+                            </svg>
+                        <img src="https://images.unsplash.com/photo-1519699047748-de8e457a634e?w=600&q=80" alt="Ombré Style" style="width: 100%; height: 350px; object-fit: cover; border-radius: 15px;"
+                <!-- Gallery Item 6 -->
+                <div class="gallery-item" data-category="herren short">
+                    <div class="gallery-image">
+                        <div class="image-placeholder">
+                            <svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="1">
+                                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                                <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                                <polyline points="21 15 16 10 5 21"></polyline>
+                            </svg>
+                        </div>
+                        <div class="gallery-overlay">
+                            <h3>Undercut</h3>
+                            <p>Trendy Undercut Styling</p>
+                        </div>
+                    </div>
+                </div>
+img src="https://images.unsplash.com/photo-1605497788044-5a32c7078486?w=600&q=80" alt="Undercut" style="width: 100%; height: 350px; object-fit: cover; border-radius: 15px;"   <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                                <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                                <polyline points="21 15 16 10 5 21"></polyline>
+                            </svg>
+                        </div>
+                        <div class="gallery-overlay">
+                            <h3>Sleek & Straight</h3>
+                            <p>Glattes, elegantes Styling</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Gallery Item 8 -->
+                <div class="gallery-item" data-category="damen color">
+                    <div class="gallery-image">
+                        <div class="image-placeholder">
+                            <svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="1">
+                                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                                <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                                <polyline points="21 15 16 10 5 21"></polyline>
+                            </svg>
+                        </div>
+                        <div class="gallery-overlay">
+                            <h3>Blonde Highlights</h3>
+                            <p>Natürliche Highlight-Technik</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Gallery Item 9 -->
+                <div class="gallery-item" data-category="herren short">
+                    <div class="gallery-image">
+                        <div class="image-placeholder">
+                            <svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="1">
+                                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                                <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                                <polyline points="21 15 16 10 5 21"></polyline>
+                            </svg>
+                        </div>
+                        <div class="gallery-overlay">
+                            <h3>Textured Crop</h3>
+                            <p>Strukturierter Herrenschnitt</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Gallery Item 10 -->
+                <div class="gallery-item" data-category="damen long">
+                    <div class="gallery-image">
+                        <div class="image-placeholder">
+                            <svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="1">
+                                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                                <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                                <polyline points="21 15 16 10 5 21"></polyline>
+                            </svg>
+                        </div>
+                        <div class="gallery-overlay">
+                            <h3>Romantic Curls</h3>
+                            <p>Voluminöse Locken</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Gallery Item 11 -->
+                <div class="gallery-item" data-category="damen short">
+                    <div class="gallery-image">
+                        <div class="image-placeholder">
+                            <svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="1">
+                                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                                <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                                <polyline points="21 15 16 10 5 21"></polyline>
+                            </svg>
+                        </div>
+                        <div class="gallery-overlay">
+                            <h3>Bob Cut</h3>
+                            <p>Klassischer Bob modern interpretiert</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Gallery Item 12 -->
+                <div class="gallery-item" data-category="herren short">
+                    <div class="gallery-image">
+                        <div class="image-placeholder">
+                            <svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="1">
+                                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                                <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                                <polyline points="21 15 16 10 5 21"></polyline>
+                            </svg>
+                        </div>
+                        <div class="gallery-overlay">
+                            <h3>Business Style</h3>
+                            <p>Professionell und gepflegt</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta-section">
+        <div class="container">
+            <div class="cta-content">
+                <h2>Gefällt dir ein Style?</h2>
+                <p>Vereinbare jetzt deinen Termin und lass dich von unserem Team beraten</p>
+                <div class="cta-buttons">
+                    <a href="tel:004921516575700" class="btn-primary">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <path
+                                d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z">
+                            </path>
+                        </svg>
+                        Jetzt anrufen
+                    </a>
+                    <a href="contact.html" class="btn-secondary-outline">Kontakt aufnehmen</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <h2>THE SOHO</h2>
+                    <p class="tagline">hairdressing</p>
+                    <p class="footer-text">Premium Friseur in Krefeld</p>
+                    <div class="social-links-footer">
+                        <a href="https://www.instagram.com/thesohohairdressing/" target="_blank" aria-label="Instagram">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                                <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+                                <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" fill="none" stroke="white"
+                                    stroke-width="2"></path>
+                                <line x1="17.5" y1="6.5" x2="17.51" y2="6.5" stroke="white" stroke-width="2"></line>
+                            </svg>
+                        </a>
+                        <a href="https://www.facebook.com/thesohohairdressing/" target="_blank" aria-label="Facebook">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path>
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+                <div class="footer-links">
+                    <h4>Quick Links</h4>
+                    <a href="home.html">Home</a>
+                    <a href="styles.html">Styles</a>
+                    <a href="team.html">Team</a>
+                    <a href="contact.html">Kontakt</a>
+                </div>
+                <div class="footer-links">
+                    <h4>Services</h4>
+                    <a href="balayage.html">Balayage</a>
+                    <a href="hair-systems.html">Hair Systems</a>
+                    <a href="styles.html">Styles</a>
+                    <a href="preisliste.html">Preisliste</a>
+                </div>
+                <div class="footer-links">
+                    <h4>Legal</h4>
+                    <a href="https://www.thesoho.de/impressum/">Impressum</a>
+                    <a href="https://www.thesoho.de/privacy-policy/">Privacy Policy</a>
+                    <a href="https://www.thesoho.de/cookie-richtlinie-eu/">Cookie-Richtlinie</a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 THE SOHO hairdressing. Alle Rechte vorbehalten.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+
+</html>

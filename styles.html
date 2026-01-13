@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="de">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Styles Gallery - THE SOHO | Moderne Haarschnitte & Inspirationen</title>
+    <meta name="description"
+        content="Entdecke unsere Style-Galerie mit modernen Haarschnitten und Frisuren. Lass dich inspirieren für deinen nächsten Look bei THE SOHO Krefeld.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600;700&family=Montserrat:wght@300;400;500;600&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <a href="home.html" class="logo">
+                <h1>THE SOHO</h1>
+                <p class="tagline">hairdressing</p>
+            </a>
+            <button class="mobile-menu-toggle" aria-label="Toggle menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            <nav class="nav">
+                <a href="home.html">Home</a>
+                <a href="styles.html" class="active">Styles</a>
+                <a href="balayage.html">Balayage</a>
+                <a href="team.html">Team</a>
+                <a href="hair-systems.html">Hair Systems</a>
+                <a href="preisliste.html">Preisliste</a>
+                <a href="contact.html">Kontakt</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-overlay"></div>
+        <div class="hero-content">
+            <h2 class="hero-title">Unsere Styles</h2>
+            <p class="hero-subtitle">Entdecke moderne Haarschnitte und finde deine Inspiration</p>
+        </div>
+    </section>
+
+    <!-- Intro Section -->
+    <section class="intro-section">
+        <div class="container">
+            <div class="intro-content">
+                <span class="section-label">Style Gallery</span>
+                <h2 class="section-title">Jeder Haarschnitt ist einzigartig</h2>
+                <p class="section-description">
+                    Das Herzstück eines jeden Haarschnitts sind die unterschiedlichen Formen und Texturen.
+                    Bei THE SOHO helfen wir Dir, Deinen individuellen Stil zu finden. Denn jeder Haartyp ist anders
+                    und verdient eine maßgeschneiderte Behandlung. Unsere erfahrenen Stylisten beraten Dich gerne.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Filter Section -->
+    <section class="filter-section">
+        <div class="container">
+            <div class="filters">
+                <button class="filter-btn active" data-filter="alle">Alle Styles</button>
+                <button class="filter-btn" data-filter="damen">Damen</button>
+                <button class="filter-btn" data-filter="herren">Herren</button>
+                <button class="filter-btn" data-filter="color">Coloration</button>
+                <button class="filter-btn" data-filter="short">Kurzhaar</button>
+                <button class="filter-btn" data-filter="long">Langhaar</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Gallery Section -->
+    <section class="gallery-section">
+        <div class="container">
+            <div class="gallery-grid">
+
+                <!-- Gallery Item 1 -->
+                <div class="gallery-item" data-category="damen long">
+                    <div class="gallery-image">
+                        <img src="https://images.unsplash.com/photo-1595475884562-073c30d45670?w=600&q=80"
+                            alt="Beach Waves"
+                            style="width: 100%; height: 350px; object-fit: cover; border-radius: 15px;">
+                        <div class="gallery-overlay">
+                            <h3>Beach Waves</h3>
+                            <p>Langes Haar mit natürlichen Wellen</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Gallery Item 2 -->
+                <div class="gallery-item" data-category="damen color">
+                    <div class="gallery-image">
+                        <img src="https://images.unsplash.com/photo-1522337094846-8a818192de1f?w=600&q=80"
+                            alt="Balayage Highlight"
+                            style="width: 100%; height: 350px; object-fit: cover; border-radius: 15px;">
+                        <div class="gallery-overlay">
+                            <h3>Balayage Highlight</h3>
+                            <p>Natürliche Balayage-Technik</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Gallery Item 3 -->
+                <div class="gallery-item" data-category="herren short">
+                    <div class="gallery-image">
+                        <img src="https://images.unsplash.com/photo-1621605815971-fbc98d665033?w=600&q=80"
+                            alt="Modern Fade"
+                            style="width: 100%; height: 350px; object-fit: cover; border-radius: 15px;">
+                        <div class="gallery-overlay">
+                            <h3>Modern Fade</h3>
+                            <p>Klassischer Fade mit modernem Touch</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Gallery Item 4 -->
+                <div class="gallery-item" data-category="damen short">
+                    <div class="gallery-image">
+                        <img src="https://images.unsplash.com/photo-1634449571010-02389ed0f9b0?w=600&q=80"
+                            alt="Pixie Cut" style="width: 100%; height: 350px; object-fit: cover; border-radius: 15px;">
+                        <div class="gallery-overlay">
+                            <h3>Pixie Cut</h3>
+                            <p>Moderner Kurzhaarschnitt</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Gallery Item 5 -->
+                <div class="gallery-item" data-category="damen long color">
+                    <div class="gallery-image">
+                        <img src="https://images.unsplash.com/photo-1519699047748-de8e457a634e?w=600&q=80"
+                            alt="Ombré Style"
+                            style="width: 100%; height: 350px; object-fit: cover; border-radius: 15px;">
+                        <div class="gallery-overlay">
+                            <h3>Ombré Style</h3>
+                            <p>Fließender Farbverlauf</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Gallery Item 6 -->
+                <div class="gallery-item" data-category="herren short">
+                    <div class="gallery-image">
+                        <img src="https://images.unsplash.com/photo-1605497788044-5a32c7078486?w=600&q=80"
+                            alt="Undercut" style="width: 100%; height: 350px; object-fit: cover; border-radius: 15px;">
+                        <div class="gallery-overlay">
+                            <h3>Undercut</h3>
+                            <p>Trendy Undercut Styling</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Gallery Item 7 -->
+                <div class="gallery-item" data-category="damen long">
+                    <div class="gallery-image">
+                        <img src="https://images.unsplash.com/photo-1587694191987-cf753d78be0f?w=600&q=80"
+                            alt="Lange Locken"
+                            style="width: 100%; height: 350px; object-fit: cover; border-radius: 15px;">
+                        <div class="gallery-overlay">
+                            <h3>Lange Locken</h3>
+                            <p>Voluminöse Lockenpracht</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Gallery Item 8 -->
+                <div class="gallery-item" data-category="damen color">
+                    <div class="gallery-image">
+                        <img src="https://images.unsplash.com/photo-1590540179852-2110a4ac6d3c?w=600&q=80"
+                            alt="Platinum Blonde"
+                            style="width: 100%; height: 350px; object-fit: cover; border-radius: 15px;">
+                        <div class="gallery-overlay">
+                            <h3>Platinum Blonde</h3>
+                            <p>Kühles Platinblond</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Gallery Item 9 -->
+                <div class="gallery-item" data-category="herren short">
+                    <div class="gallery-image">
+                        <img src="https://images.unsplash.com/photo-1622286346003-c2f7c10c9bb8?w=600&q=80"
+                            alt="Business Cut"
+                            style="width: 100%; height: 350px; object-fit: cover; border-radius: 15px;">
+                        <div class="gallery-overlay">
+                            <h3>Business Cut</h3>
+                            <p>Professioneller Business-Look</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Gallery Item 10 -->
+                <div class="gallery-item" data-category="damen short">
+                    <div class="gallery-image">
+                        <img src="https://images.unsplash.com/photo-1487412947147-5cebf100ffc2?w=600&q=80" alt="Bob Cut"
+                            style="width: 100%; height: 350px; object-fit: cover; border-radius: 15px;">
+                        <div class="gallery-overlay">
+                            <h3>Bob Cut</h3>
+                            <p>Zeitloser Bob-Schnitt</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Gallery Item 11 -->
+                <div class="gallery-item" data-category="damen long color">
+                    <div class="gallery-image">
+                        <img src="https://images.unsplash.com/photo-1549236177-db206f72dce8?w=600&q=80" alt="Highlights"
+                            style="width: 100%; height: 350px; object-fit: cover; border-radius: 15px;">
+                        <div class="gallery-overlay">
+                            <h3>Highlights</h3>
+                            <p>Natürliche Highlights</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Gallery Item 12 -->
+                <div class="gallery-item" data-category="herren short">
+                    <div class="gallery-image">
+                        <img src="https://images.unsplash.com/photo-1599351431202-1e0f0137899a?w=600&q=80"
+                            alt="Textured Crop"
+                            style="width: 100%; height: 350px; object-fit: cover; border-radius: 15px;">
+                        <div class="gallery-overlay">
+                            <h3>Textured Crop</h3>
+                            <p>Texturierter Modern Cut</p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta-section">
+        <div class="container">
+            <div class="cta-content">
+                <h2>Finde deinen Style</h2>
+                <p>Lass dich von unseren Experten beraten und finde den perfekten Look für dich</p>
+                <div class="cta-buttons">
+                    <a href="contact.html" class="btn btn-primary">Termin buchen</a>
+                    <a href="team.html" class="btn btn-secondary">Unser Team</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>THE SOHO</h3>
+                    <p>hairdressing</p>
+                    <p class="footer-description">
+                        Dein moderner Salon im Herzen von Krefeld für erstklassige Haarschnitte, Colorationen und
+                        Styling.
+                    </p>
+                </div>
+                <div class="footer-section">
+                    <h4>Öffnungszeiten</h4>
+                    <div class="opening-hours">
+                        <div class="hours-row">
+                            <span>Montag - Freitag</span>
+                            <span>10:00 - 19:00</span>
+                        </div>
+                        <div class="hours-row">
+                            <span>Samstag</span>
+                            <span>9:00 - 16:00</span>
+                        </div>
+                        <div class="hours-row">
+                            <span>Sonntag</span>
+                            <span>Geschlossen</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="footer-section">
+                    <h4>Kontakt</h4>
+                    <div class="footer-contact">
+                        <p>Marktstr. 27<br>47798 Krefeld</p>
+                        <p><a href="tel:+4921516575700">+49 (0) 2151 6575700</a></p>
+                        <p><a href="mailto:hello@thesoho.de">hello@thesoho.de</a></p>
+                    </div>
+                </div>
+                <div class="footer-section">
+                    <h4>Follow Us</h4>
+                    <div class="social-links">
+                        <a href="https://www.instagram.com/thesohohairdressing/" target="_blank" aria-label="Instagram">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                                <path
+                                    d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z" />
+                            </svg>
+                        </a>
+                        <a href="https://www.facebook.com/thesohohairdressing" target="_blank" aria-label="Facebook">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                                <path
+                                    d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 THE SOHO Hairdressing. Alle Rechte vorbehalten.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
