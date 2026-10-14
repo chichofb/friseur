@@ -1,610 +1,1410 @@
+<!doctype html>
+<html>
 
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
-<style>
-:root {
-  --bg: #f2f4f6;
-  --surface: #ffffff;
-  --ink: #16202a;
-  --muted: #5b6875;
-  --line: #d6dce2;
-  --accent: #1b5aa6;
-  --accent-ink: #ffffff;
-  --accent-soft: #e6eef8;
-  --ok: #17794a;
-  --warn: #a85a00;
-  --bad: #b4281c;
-  --code-bg: #e9edf1;
-  --font-body: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
-  --font-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
-}
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) {
-    --bg: #11171d; --surface: #1a222a; --ink: #e6ebf0; --muted: #9aa8b5; --line: #2d3944;
-    --accent: #6aa5ec; --accent-ink: #0c1722; --accent-soft: #1b2b3f; --ok: #4cc58a; --warn: #e5a04a; --bad: #ff8a7d; --code-bg: #0e1318;
-    color-scheme: dark;
-  }
-}
-:root[data-theme="dark"] {
-  --bg: #11171d; --surface: #1a222a; --ink: #e6ebf0; --muted: #9aa8b5; --line: #2d3944;
-  --accent: #6aa5ec; --accent-ink: #0c1722; --accent-soft: #1b2b3f; --ok: #4cc58a; --warn: #e5a04a; --bad: #ff8a7d; --code-bg: #0e1318;
-  color-scheme: dark;
-}
-* { box-sizing: border-box; }
-[hidden] { display: none !important; }
-body {
-  background: var(--bg); color: var(--ink); font-family: var(--font-body); font-size: 14px; line-height: 1.5;
-  padding-inline: 16px; padding-block: 24px 48px;
-}
-.wrap { max-width: 780px; margin-inline: auto; display: flex; flex-direction: column; gap: 20px; }
-button { font: inherit; cursor: pointer; }
-.btn { background: var(--surface); color: var(--ink); border: 1px solid var(--line); padding: 8px 14px; border-radius: 4px; }
-.btn:hover:not(:disabled) { border-color: var(--accent); }
-.btn.primary { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); font-weight: 600; padding: 9px 20px; }
-.btn:disabled { opacity: .55; cursor: not-allowed; }
-.btn.small { font-size: 12px; padding: 3px 8px; }
-.btn.link { border-color: transparent; background: transparent; color: var(--accent); padding: 2px 6px; font-size: 13px; }
-.btn:focus-visible, select:focus-visible, input:focus-visible, summary:focus-visible, .st:focus-visible, label.opt:has(input:focus-visible) { outline: 2px solid var(--accent); outline-offset: 2px; }
+<head>
+  <meta charset=utf8>
+  <meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <style>
+    :root {
+      color-scheme: light;
+      box-sizing: border-box;
+      padding-top: env(safe-area-inset-top, 0px);
+      padding-bottom: env(safe-area-inset-bottom, 0px)
+    }
 
-.card, .detail { background: var(--surface); border: 1px solid var(--line); border-radius: 6px; }
-.card { display: flex; flex-direction: column; }
+    html {
+      scroll-padding-top: env(safe-area-inset-top, 0px)
+    }
 
-.stepper { display: flex; list-style: none; margin: 0; padding: 16px 20px; border-bottom: 1px solid var(--line); }
-.stepper li { flex: 1 1 0; display: flex; align-items: center; min-width: 0; }
-.stepper li:last-child { flex: 0 0 auto; }
-.stepper li:not(:last-child)::after { content: ""; flex: 1; height: 2px; background: var(--line); margin-inline: 10px; min-width: 12px; }
-.stepper li.done:not(:last-child)::after { background: var(--accent); }
-.st { all: unset; display: flex; align-items: center; gap: 8px; cursor: pointer; border-radius: 4px; }
-.st:disabled { cursor: default; }
-.num { width: 26px; height: 26px; border-radius: 50%; border: 2px solid var(--line); display: grid; place-items: center; font-size: 12px; font-weight: 600; color: var(--muted); flex: none; font-variant-numeric: tabular-nums; }
-.lab { font-weight: 500; color: var(--muted); white-space: nowrap; }
-li.cur .num { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
-li.cur .lab { color: var(--ink); }
-li.done .num { border-color: var(--accent); color: var(--accent); }
-li.done .lab { color: var(--ink); }
-@media (max-width: 600px) { .stepper { padding-inline: 14px; } .lab { display: none; } li.cur .lab { display: block; } .stepper li:not(:last-child)::after { margin-inline: 6px; } }
+    body {
+      margin: 0;
+      padding: 0;
+      font: 14px -apple-system, BlinkMacSystemFont, sans-serif;
+      background: #fff;
+      color: #000
+    }
 
-.step { padding: 22px 24px 8px; display: flex; flex-direction: column; gap: 16px; }
-@media (max-width: 560px) { .step { padding-inline: 16px; } }
-.step h2 { margin: 0; font-size: 20px; line-height: 1.25; font-weight: 600; outline: none; }
-.sub { color: var(--muted); font-size: 13px; margin: -8px 0 0; max-width: 62ch; }
-.fields { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px 16px; }
-.span2 { grid-column: 1 / -1; }
-@media (max-width: 560px) { .fields { grid-template-columns: minmax(0, 1fr); } }
-.field { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
-label, .lbl { font-weight: 500; font-size: 13px; }
-.req { color: var(--bad); }
-select, input[type=text], input[type=email], input[type=tel] {
-  font: inherit; color: var(--ink); background: var(--bg); border: 1px solid var(--line); border-radius: 4px; padding: 9px 10px; width: 100%; min-width: 0;
-}
-select:disabled { opacity: .6; cursor: not-allowed; }
-select[aria-busy="true"] { cursor: progress; }
-[aria-invalid="true"] { border-color: var(--bad); }
-.hint { font-size: 12px; color: var(--muted); }
-.err { font-size: 12px; color: var(--bad); }
-.check { display: flex; align-items: center; gap: 8px; font-weight: 400; font-size: 13px; margin-top: 2px; }
-.check input { width: 16px; height: 16px; accent-color: var(--accent); }
-.choice { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
-@media (max-width: 560px) { .choice { grid-template-columns: minmax(0, 1fr); } }
-label.opt { position: relative; border: 1px solid var(--line); border-radius: 6px; padding: 14px 16px; cursor: pointer; display: flex; flex-direction: column; gap: 2px; background: var(--bg); font-weight: 400; }
-label.opt strong { font-size: 15px; font-weight: 600; }
-label.opt span { color: var(--muted); font-size: 13px; }
-label.opt input { position: absolute; opacity: 0; pointer-events: none; }
-label.opt:has(input:checked) { border-color: var(--accent); box-shadow: inset 0 0 0 1px var(--accent); background: var(--accent-soft); }
-.fixed { background: var(--code-bg); border-radius: 4px; padding: 10px 12px; color: var(--muted); font-size: 13px; }
-details { border: 1px solid var(--line); border-radius: 4px; }
-summary { padding: 10px 12px; cursor: pointer; font-weight: 500; }
-details .fields { padding: 4px 12px 14px; }
+    img {
+      max-width: 100%
+    }
 
-.sumsec { border: 1px solid var(--line); border-radius: 6px; padding: 12px 14px; display: flex; flex-direction: column; gap: 8px; }
-.sumhead { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
-.sumhead h3 { margin: 0; font-size: 13px; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); font-weight: 600; }
-dl.kv { display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: 4px 16px; margin: 0; }
-dl.kv dt { color: var(--muted); }
-dl.kv dd { margin: 0; overflow-wrap: anywhere; }
+    [hidden]:not([hidden=until-found i]) {
+      display: none !important
+    }
+  </style>
+</head>
 
-.nav { display: flex; align-items: center; gap: 12px; padding: 16px 24px 20px; margin-top: 8px; border-top: 1px solid var(--line); }
-.nav .grow { flex: 1; color: var(--muted); font-size: 13px; min-width: 0; }
-.nav .btn.primary { margin-left: auto; }
-@media (max-width: 560px) { .nav { padding-inline: 16px; } .nav .grow { display: none; } }
+<body>
+  <title>Organisations-Anlage</title>
+  <link rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+  <style>
+    /* Layout: links der Assistent (Fortschritt, ein Thema pro Schritt, Zurück/Weiter), rechts der API-Monitor, der sich ausblenden lässt. Unter 920px untereinander. */
+    :root {
+      --bg: #f2f4f6;
+      --surface: #ffffff;
+      --ink: #16202a;
+      --muted: #5b6875;
+      --line: #d6dce2;
+      --accent: #1b5aa6;
+      --accent-ink: #ffffff;
+      --accent-soft: #e6eef8;
+      --ok: #17794a;
+      --warn: #a85a00;
+      --bad: #b4281c;
+      --code-bg: #e9edf1;
+      --font-body: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+      --font-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+    }
 
-.detail { padding: 22px 24px; display: flex; flex-direction: column; gap: 18px; }
-.detail h2 { margin: 0; font-size: 20px; line-height: 1.25; }
-.detail .ok { color: var(--ok); font-size: 13px; font-weight: 500; }
-.detail section { border-top: 1px solid var(--line); padding-top: 14px; display: flex; flex-direction: column; gap: 10px; }
-.detail h3 { margin: 0; font-size: 14px; }
-.detail .row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
-.detail .row input { flex: 1 1 140px; width: auto; }
-.tag { font-family: var(--font-mono); font-size: 11px; border: 1px solid var(--ok); color: var(--ok); border-radius: 3px; padding: 0 6px; }
-.note { font-size: 12px; color: var(--muted); margin: 10px 0 0; }
-@media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
-</style>
+    @media (prefers-color-scheme: dark) {
+      :root:not([data-theme="light"]) {
+        --bg: #11171d;
+        --surface: #1a222a;
+        --ink: #e6ebf0;
+        --muted: #9aa8b5;
+        --line: #2d3944;
+        --accent: #6aa5ec;
+        --accent-ink: #0c1722;
+        --accent-soft: #1b2b3f;
+        --ok: #4cc58a;
+        --warn: #e5a04a;
+        --bad: #ff8a7d;
+        --code-bg: #0e1318;
+        color-scheme: dark;
+      }
+    }
 
-<div class="wrap">
-  <div class="grid" id="grid">
-    <div class="main">
-      <form id="wiz" class="card" novalidate>
-        <ol class="stepper" id="stepper" aria-label="Fortschritt"></ol>
+    :root[data-theme="dark"] {
+      --bg: #11171d;
+      --surface: #1a222a;
+      --ink: #e6ebf0;
+      --muted: #9aa8b5;
+      --line: #2d3944;
+      --accent: #6aa5ec;
+      --accent-ink: #0c1722;
+      --accent-soft: #1b2b3f;
+      --ok: #4cc58a;
+      --warn: #e5a04a;
+      --bad: #ff8a7d;
+      --code-bg: #0e1318;
+      color-scheme: dark;
+    }
 
-        <section class="step" id="s1" data-step="1" aria-labelledby="t1">
-          <h2 id="t1" tabindex="-1">Was legst du an?</h2>
-          <p class="sub">Davon hängt ab, welche Angaben das Formular als Nächstes abfragt.</p>
-          <div class="choice" role="radiogroup" aria-label="Was legst du an?">
-            <label class="opt"><input type="radio" name="mode" value="org" checked><strong>Organisation</strong><span>Feuerwehr, Leitstelle, Krankenhaus, Hilfsorganisation</span></label>
-            <label class="opt"><input type="radio" name="mode" value="unit"><strong>Verwaltungseinheit</strong><span>Land, Kreis oder Gemeinde</span></label>
-          </div>
-          <div class="field" id="orgtypeBox">
-            <label for="orgtypeId">Organisationsart <span class="req">*</span></label>
-            <select id="orgtypeId" aria-describedby="e-orgtypeId"></select>
-            <label class="check"><input type="checkbox" id="privateOrg"> Nur private Organisationen anzeigen</label>
-            <div class="err" id="e-orgtypeId"></div>
-          </div>
-          <div class="fixed" id="unitFixed" hidden></div>
-        </section>
+    * {
+      box-sizing: border-box;
+    }
 
-        <section class="step" id="s2" data-step="2" aria-labelledby="t2" hidden>
-          <h2 id="t2" tabindex="-1">Wo gehört es hin?</h2>
-          <p class="sub" id="sub2"></p>
-          <div class="fields">
+    [hidden] {
+      display: none !important;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--ink);
+      font-family: var(--font-body);
+      font-size: 14px;
+      line-height: 1.5;
+      padding-inline: 16px;
+      padding-block: 24px 48px;
+    }
+
+    .wrap {
+      max-width: 1180px;
+      margin-inline: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    header {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px 24px;
+      align-items: flex-end;
+      justify-content: space-between;
+    }
+
+    header .title {
+      min-width: 0;
+      flex: 1 1 340px;
+    }
+
+    h1 {
+      font-size: 24px;
+      line-height: 1.2;
+      margin: 0 0 4px;
+      font-weight: 600;
+      text-wrap: balance;
+    }
+
+    header p {
+      margin: 0;
+      color: var(--muted);
+      max-width: 66ch;
+    }
+
+    .chip {
+      display: inline-block;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+      color: var(--warn);
+      border: 1px solid var(--warn);
+      padding: 1px 8px;
+      border-radius: 3px;
+      margin-bottom: 8px;
+    }
+
+    .presets {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    button {
+      font: inherit;
+      cursor: pointer;
+    }
+
+    .btn {
+      background: var(--surface);
+      color: var(--ink);
+      border: 1px solid var(--line);
+      padding: 8px 14px;
+      border-radius: 4px;
+    }
+
+    .btn:hover:not(:disabled) {
+      border-color: var(--accent);
+    }
+
+    .btn.primary {
+      background: var(--accent);
+      color: var(--accent-ink);
+      border-color: var(--accent);
+      font-weight: 600;
+      padding: 9px 20px;
+    }
+
+    .btn:disabled {
+      opacity: .55;
+      cursor: not-allowed;
+    }
+
+    .btn.small {
+      font-size: 12px;
+      padding: 3px 8px;
+    }
+
+    .btn.link {
+      border-color: transparent;
+      background: transparent;
+      color: var(--accent);
+      padding: 2px 6px;
+      font-size: 13px;
+    }
+
+    .btn:focus-visible,
+    select:focus-visible,
+    input:focus-visible,
+    summary:focus-visible,
+    .st:focus-visible,
+    label.opt:has(input:focus-visible),
+    #orgtypeId:focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 2px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: minmax(0, 760px);
+      justify-content: center;
+      gap: 20px;
+      align-items: start;
+    }
+
+    @media (max-width: 920px) {
+      .grid {
+        grid-template-columns: minmax(0, 1fr);
+      }
+    }
+
+    .card,
+    .panel,
+    .detail {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 6px;
+    }
+
+    .card {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .stepper {
+      display: flex;
+      list-style: none;
+      margin: 0;
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .stepper li {
+      flex: 1 1 0;
+      display: flex;
+      align-items: center;
+      min-width: 0;
+    }
+
+    .stepper li:last-child {
+      flex: 0 0 auto;
+    }
+
+    .stepper li:not(:last-child)::after {
+      content: "";
+      flex: 1;
+      height: 2px;
+      background: var(--line);
+      margin-inline: 10px;
+      min-width: 12px;
+    }
+
+    .stepper li.done:not(:last-child)::after {
+      background: var(--accent);
+    }
+
+    .st {
+      all: unset;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      border-radius: 4px;
+    }
+
+    .st:disabled {
+      cursor: default;
+    }
+
+    .num {
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      border: 2px solid var(--line);
+      display: grid;
+      place-items: center;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--muted);
+      flex: none;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .lab {
+      font-weight: 500;
+      color: var(--muted);
+      white-space: nowrap;
+    }
+
+    li.cur .num {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: var(--accent-ink);
+    }
+
+    li.cur .lab {
+      color: var(--ink);
+    }
+
+    li.done .num {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    li.done .lab {
+      color: var(--ink);
+    }
+
+    @media (max-width: 600px) {
+      .stepper {
+        padding-inline: 14px;
+      }
+
+      .lab {
+        display: none;
+      }
+
+      li.cur .lab {
+        display: block;
+      }
+
+      .stepper li:not(:last-child)::after {
+        margin-inline: 6px;
+      }
+    }
+
+    .step {
+      padding: 22px 24px 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    @media (max-width: 560px) {
+      .step {
+        padding-inline: 16px;
+      }
+    }
+
+    .step h2 {
+      margin: 0;
+      font-size: 20px;
+      line-height: 1.25;
+      font-weight: 600;
+      outline: none;
+    }
+
+    .sub {
+      color: var(--muted);
+      font-size: 13px;
+      margin: -8px 0 0;
+      max-width: 62ch;
+    }
+
+    .fields {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px 16px;
+    }
+
+    .span2 {
+      grid-column: 1 / -1;
+    }
+
+    @media (max-width: 560px) {
+      .fields {
+        grid-template-columns: minmax(0, 1fr);
+      }
+    }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      min-width: 0;
+    }
+
+    label,
+    .lbl {
+      font-weight: 500;
+      font-size: 13px;
+    }
+
+    .req {
+      color: var(--bad);
+    }
+
+    .api {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--muted);
+      font-weight: 400;
+      margin-left: 6px;
+    }
+
+    select,
+    input[type=text],
+    input[type=email],
+    input[type=tel] {
+      font: inherit;
+      color: var(--ink);
+      background: var(--bg);
+      border: 1px solid var(--line);
+      border-radius: 4px;
+      padding: 9px 10px;
+      width: 100%;
+      min-width: 0;
+    }
+
+    select:disabled {
+      opacity: .6;
+      cursor: not-allowed;
+    }
+
+    select[aria-busy="true"] {
+      cursor: progress;
+    }
+
+    [aria-invalid="true"] {
+      border-color: var(--bad);
+    }
+
+    #orgtypeId[aria-invalid="true"] {
+      outline: 1px solid var(--bad);
+      outline-offset: 4px;
+      border: 0;
+      border-radius: 6px;
+    }
+
+    .hint {
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .err {
+      font-size: 12px;
+      color: var(--bad);
+    }
+
+    .check {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 400;
+      font-size: 13px;
+      margin-top: 2px;
+    }
+
+    .check input {
+      width: 16px;
+      height: 16px;
+      accent-color: var(--accent);
+    }
+
+    .choice {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 12px;
+    }
+
+    label.opt {
+      position: relative;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      padding: 14px 16px;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      background: var(--bg);
+      font-weight: 400;
+      min-width: 0;
+    }
+
+    label.opt strong {
+      font-size: 15px;
+      font-weight: 600;
+      overflow-wrap: anywhere;
+    }
+
+    label.opt span {
+      color: var(--muted);
+      font-size: 12.5px;
+    }
+
+    label.opt input {
+      position: absolute;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    label.opt:has(input:checked) {
+      border-color: var(--accent);
+      box-shadow: inset 0 0 0 1px var(--accent);
+      background: var(--accent-soft);
+    }
+
+    .combo {
+      position: relative;
+    }
+
+    .combo ul {
+      position: absolute;
+      z-index: 5;
+      left: 0;
+      right: 0;
+      top: calc(100% + 2px);
+      margin: 0;
+      padding: 4px;
+      list-style: none;
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 4px;
+      max-height: 220px;
+      overflow-y: auto;
+      box-shadow: 0 6px 16px rgba(0, 0, 0, .14);
+    }
+
+    .combo li {
+      padding: 7px 8px;
+      border-radius: 3px;
+      cursor: pointer;
+    }
+
+    .combo li:hover {
+      background: var(--code-bg);
+    }
+
+    .combo li.none {
+      color: var(--muted);
+      cursor: default;
+    }
+
+    .picked {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      border: 1px solid var(--accent);
+      background: var(--accent-soft);
+      border-radius: 4px;
+      padding: 6px 10px;
+    }
+
+    .suggest {
+      align-self: flex-start;
+      background: transparent;
+      border: 1px dashed var(--accent);
+      color: var(--accent);
+      border-radius: 4px;
+      padding: 5px 10px;
+      font-size: 13px;
+    }
+
+    details {
+      border: 1px solid var(--line);
+      border-radius: 4px;
+    }
+
+    summary {
+      padding: 10px 12px;
+      cursor: pointer;
+      font-weight: 500;
+    }
+
+    details .fields {
+      padding: 4px 12px 14px;
+    }
+
+    .sumsec {
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      padding: 12px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .sumhead {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .sumhead h3 {
+      margin: 0;
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      color: var(--muted);
+      font-weight: 600;
+    }
+
+    dl.kv {
+      display: grid;
+      grid-template-columns: max-content minmax(0, 1fr);
+      gap: 4px 16px;
+      margin: 0;
+    }
+
+    dl.kv dt {
+      color: var(--muted);
+    }
+
+    dl.kv dd {
+      margin: 0;
+      overflow-wrap: anywhere;
+    }
+
+    .nav {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 16px 24px 20px;
+      margin-top: 8px;
+      border-top: 1px solid var(--line);
+    }
+
+    .nav .grow {
+      flex: 1;
+      color: var(--muted);
+      font-size: 13px;
+      min-width: 0;
+    }
+
+    .nav .btn.primary {
+      margin-left: auto;
+    }
+
+    @media (max-width: 560px) {
+      .nav {
+        padding-inline: 16px;
+      }
+
+      .nav .grow {
+        display: none;
+      }
+    }
+
+    .detail {
+      padding: 22px 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+
+    .detail h2 {
+      margin: 0;
+      font-size: 20px;
+      line-height: 1.25;
+    }
+
+    .detail .ok {
+      color: var(--ok);
+      font-size: 13px;
+      font-weight: 500;
+    }
+
+    .detail section {
+      border-top: 1px solid var(--line);
+      padding-top: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .detail h3 {
+      margin: 0;
+      font-size: 14px;
+    }
+
+    .detail .row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .detail .row input {
+      flex: 1 1 140px;
+      width: auto;
+    }
+
+    .tag {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      border: 1px solid var(--ok);
+      color: var(--ok);
+      border-radius: 3px;
+      padding: 0 6px;
+    }
+
+    .side {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      min-width: 0;
+    }
+
+    .panel {
+      padding: 16px 18px 18px;
+      min-width: 0;
+    }
+
+    .panel h2 {
+      font-size: 13px;
+      margin: 0 0 10px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      color: var(--muted);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .panel h2 .btn {
+      text-transform: none;
+      letter-spacing: 0;
+    }
+
+    .deps {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .deps li {
+      display: grid;
+      grid-template-columns: 10px minmax(0, 1fr);
+      gap: 10px;
+      align-items: baseline;
+      font-size: 13px;
+    }
+
+    .dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      border: 2px solid var(--line);
+      background: transparent;
+      display: inline-block;
+    }
+
+    .dot.on {
+      background: var(--accent);
+      border-color: var(--accent);
+    }
+
+    .deps small {
+      display: block;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .scroll {
+      overflow-x: auto;
+    }
+
+    pre {
+      margin: 0;
+      font-family: var(--font-mono);
+      font-size: 12.5px;
+      line-height: 1.55;
+      background: var(--code-bg);
+      padding: 12px;
+      border-radius: 4px;
+    }
+
+    ol.log {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      max-height: 340px;
+      overflow-y: auto;
+    }
+
+    ol.log li {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      background: var(--code-bg);
+      padding: 6px 8px;
+      border-radius: 4px;
+      display: grid;
+      grid-template-columns: auto minmax(0, 1fr) auto;
+      gap: 2px 8px;
+    }
+
+    .m {
+      font-weight: 500;
+      color: var(--accent);
+    }
+
+    .m.post {
+      color: var(--warn);
+    }
+
+    .p {
+      overflow-wrap: anywhere;
+    }
+
+    .s {
+      color: var(--ok);
+      white-space: nowrap;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .q {
+      grid-column: 2 / -1;
+      color: var(--muted);
+      overflow-wrap: anywhere;
+    }
+
+    .empty {
+      color: var(--muted);
+      font-size: 13px;
+      display: block !important;
+    }
+
+    .note {
+      font-size: 12px;
+      color: var(--muted);
+      margin: 10px 0 0;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      * {
+        transition: none !important;
+        animation: none !important;
+      }
+    }
+  </style>
+
+  <div class="wrap">
+    <header>
+      <div class="title">
+        <h1>Organisation anlegen</h1>
+      </div>
+    </header>
+
+    <div class="grid" id="grid">
+      <div class="main">
+        <form id="wiz" class="card" novalidate>
+          <ol class="stepper" id="stepper" aria-label="Fortschritt"></ol>
+
+          <section class="step" id="s1" data-step="1" aria-labelledby="t1">
+            <h2 id="t1" tabindex="-1">Was legst du an?</h2>
+            <p class="sub">Wähle die Art der Organisation. Eine Gemeinde oder einen Kreis legst du als „Verwaltung“ an.
+            </p>
             <div class="field">
-              <label for="levelTypeId" id="lbl-level">Ebene</label>
-              <select id="levelTypeId" aria-describedby="e-levelTypeId"></select>
-              <div class="hint" id="h-level"></div>
-              <div class="err" id="e-levelTypeId"></div>
+              <span class="lbl" id="lbl-org">Organisationsart <span class="req">*</span><span
+                  class="api">orgtypeId</span></span>
+              <div class="choice" id="orgtypeId" role="radiogroup" aria-labelledby="lbl-org"
+                aria-describedby="e-orgtypeId" tabindex="-1"></div>
+              <label class="check"><input type="checkbox" id="privateOrg"> Nur private Organisationen anzeigen</label>
+              <div class="err" id="e-orgtypeId"></div>
             </div>
-            <div class="field">
-              <label for="levelUuid" id="lbl-unit">Zugehörige Einheit</label>
-              <select id="levelUuid" aria-describedby="e-levelUuid"></select>
-              <div class="hint" id="h-levelUuid"></div>
-              <div class="err" id="e-levelUuid"></div>
-            </div>
-            <div class="field span2">
-              <label for="communityId">Gemeinde <span class="hint" style="font-weight:400">(optional)</span></label>
-              <select id="communityId" aria-describedby="e-communityId">
-                <option value="">– bitte wählen –</option>
-              </select>
-              <div class="hint">Wähle eine Gemeinde aus der Liste aus.</div>
-              <div class="err" id="e-communityId"></div>
-            </div>
-          </div>
-        </section>
+          </section>
 
-        <section class="step" id="s3" data-step="3" aria-labelledby="t3" hidden>
-          <h2 id="t3" tabindex="-1">Angaben</h2>
-          <p class="sub">Pflicht sind Name, Postleitzahl und Ort. Alles andere ist optional.</p>
-          <div class="fields">
-            <div class="field span2">
-              <label for="name">Name <span class="req">*</span></label>
-              <input type="text" id="name" autocomplete="off" aria-describedby="e-name">
-              <div class="err" id="e-name"></div>
-            </div>
-            <div class="field">
-              <label for="street">Straße</label>
-              <input type="text" id="street" autocomplete="off">
-            </div>
-            <div class="field">
-              <label for="hnr">Hausnummer</label>
-              <input type="text" id="hnr" autocomplete="off">
-            </div>
-            <div class="field">
-              <label for="postcode">Postleitzahl <span class="req">*</span></label>
-              <input type="text" id="postcode" inputmode="numeric" autocomplete="off" aria-describedby="e-postcode">
-              <div class="err" id="e-postcode"></div>
-            </div>
-            <div class="field">
-              <label for="city">Ort <span class="req">*</span></label>
-              <input type="text" id="city" autocomplete="off" aria-describedby="e-city">
-              <div class="err" id="e-city"></div>
-            </div>
-          </div>
-          <details id="more">
-            <summary>Weitere Angaben (Telefon, Fax, E-Mail)</summary>
+          <section class="step" id="s2" data-step="2" aria-labelledby="t2" hidden>
+            <h2 id="t2" tabindex="-1">Wo gehört es hin?</h2>
             <div class="fields">
               <div class="field">
-                <label for="phone">Telefon</label>
-                <input type="tel" id="phone" autocomplete="off">
+                <label for="levelTypeId">Ebene<span class="api">levelTypeId</span></label>
+                <select id="levelTypeId" aria-describedby="e-levelTypeId"></select>
+                <div class="hint">Leer lassen, wenn es keine Einheit gibt.</div>
+                <div class="err" id="e-levelTypeId"></div>
               </div>
               <div class="field">
-                <label for="fax">Fax</label>
-                <input type="tel" id="fax" autocomplete="off">
+                <label for="levelUuid">Zugehörige Einheit<span class="api">levelUuid</span></label>
+                <select id="levelUuid" aria-describedby="e-levelUuid"></select>
+                <div class="hint" id="h-levelUuid"></div>
+                <div class="err" id="e-levelUuid"></div>
               </div>
               <div class="field span2">
-                <label for="email">E-Mail</label>
-                <input type="email" id="email" autocomplete="off" aria-describedby="e-email">
-                <div class="err" id="e-email"></div>
+                <label for="communityId">Community <span class="req">*</span><span
+                    class="api">communityId</span></label>
+                <select id="communityId">
+                  <option value="">– bitte wählen –</option>
+                </select>
+                <button type="button" class="suggest" id="communitySuggest" hidden></button>
+                <div class="hint">Die Liste kommt von community/select.</div>
+                <div class="err" id="e-communityId"></div>
               </div>
             </div>
-          </details>
-        </section>
+          </section>
 
-        <section class="step" id="s4" data-step="4" aria-labelledby="t4" hidden>
-          <h2 id="t4" tabindex="-1">Prüfen und anlegen</h2>
-          <p class="sub">Mit „Ändern“ springst du zum jeweiligen Schritt. Die Eingaben bleiben erhalten.</p>
-          <div id="summary" style="display:flex;flex-direction:column;gap:12px"></div>
-        </section>
+          <section class="step" id="s3" data-step="3" aria-labelledby="t3" hidden>
+            <h2 id="t3" tabindex="-1">Angaben</h2>
+            <p class="sub">Pflicht sind Name, Postleitzahl und Ort. Alles andere ist optional.</p>
+            <div class="fields">
+              <div class="field span2">
+                <label for="name">Name <span class="req">*</span><span class="api">name</span></label>
+                <input type="text" id="name" autocomplete="off" aria-describedby="e-name">
+                <div class="err" id="e-name"></div>
+              </div>
+              <div class="field">
+                <label for="street">Straße<span class="api">street</span></label>
+                <input type="text" id="street" autocomplete="off">
+              </div>
+              <div class="field">
+                <label for="hnr">Hausnummer<span class="api">hnr</span></label>
+                <input type="text" id="hnr" autocomplete="off">
+              </div>
+              <div class="field">
+                <label for="postcode">Postleitzahl <span class="req">*</span><span class="api">postcode</span></label>
+                <input type="text" id="postcode" inputmode="numeric" autocomplete="off" aria-describedby="e-postcode">
+                <div class="err" id="e-postcode"></div>
+              </div>
+              <div class="field">
+                <label for="city">Ort <span class="req">*</span><span class="api">city</span></label>
+                <input type="text" id="city" autocomplete="off" aria-describedby="e-city">
+                <div class="err" id="e-city"></div>
+              </div>
+            </div>
+            <details id="more">
+              <summary>Weitere Angaben (Telefon, Fax, E-Mail)</summary>
+              <div class="fields">
+                <div class="field">
+                  <label for="phone">Telefon<span class="api">phone</span></label>
+                  <input type="tel" id="phone" autocomplete="off">
+                </div>
+                <div class="field">
+                  <label for="fax">Fax<span class="api">fax</span></label>
+                  <input type="tel" id="fax" autocomplete="off">
+                </div>
+                <div class="field span2">
+                  <label for="email">E-Mail<span class="api">email</span></label>
+                  <input type="email" id="email" autocomplete="off" aria-describedby="e-email">
+                  <div class="err" id="e-email"></div>
+                </div>
+              </div>
+            </details>
+          </section>
 
-        <div class="nav">
-          <button type="button" class="btn" id="back">Zurück</button>
-          <span class="grow" id="status" aria-live="polite"></span>
-          <button type="submit" class="btn primary" id="next">Weiter</button>
-        </div>
-      </form>
+          <section class="step" id="s4" data-step="4" aria-labelledby="t4" hidden>
+            <h2 id="t4" tabindex="-1">Prüfen und anlegen</h2>
+            <p class="sub">Mit „Ändern“ springst du zum jeweiligen Schritt. Die Eingaben bleiben erhalten.</p>
+            <div id="summary" style="display:flex;flex-direction:column;gap:12px"></div>
+          </section>
 
-      <article class="detail" id="done" hidden>
-        <div>
-          <div class="ok" role="status">201 Created · simuliert, es wurde nichts gesendet</div>
-          <h2 id="d-name"></h2>
-        </div>
-        <dl class="kv" id="d-list"></dl>
-        <section aria-labelledby="d-loc">
-          <h3 id="d-loc">Als Nächstes: Standort</h3>
-          <div id="d-locs" class="hint">Noch kein Standort.</div>
-          <div class="row"><button type="button" class="btn" id="addLoc">Hauptstandort aus der Adresse anlegen</button></div>
-        </section>
-        <section aria-labelledby="d-con">
-          <h3 id="d-con">Als Nächstes: Kontakt</h3>
-          <div id="d-cons" class="hint">Noch kein Kontakt.</div>
-          <div class="row">
-            <input type="text" id="cFirst" placeholder="Vorname" aria-label="Vorname">
-            <input type="text" id="cLast" placeholder="Nachname" aria-label="Nachname">
-            <button type="button" class="btn" id="addCon">Kontakt anlegen</button>
+          <div class="nav">
+            <button type="button" class="btn" id="back">Zurück</button>
+            <span class="grow" id="status" aria-live="polite"></span>
+            <button type="submit" class="btn primary" id="next">Weiter</button>
           </div>
-        </section>
-        <div class="row"><button type="button" class="btn primary" id="again">Weitere anlegen</button></div>
-      </article>
+        </form>
+
+        <article class="detail" id="done" hidden>
+          <div>
+            <div class="ok" role="status">201 Created · simuliert, es wurde nichts gesendet</div>
+            <h2 id="d-name"></h2>
+          </div>
+          <dl class="kv" id="d-list"></dl>
+          <section aria-labelledby="d-loc">
+            <h3 id="d-loc">Als Nächstes: Standort</h3>
+            <div id="d-locs" class="hint">Noch kein Standort.</div>
+            <div class="row"><button type="button" class="btn" id="addLoc">Hauptstandort aus der Adresse
+                anlegen</button></div>
+          </section>
+          <section aria-labelledby="d-con">
+            <h3 id="d-con">Als Nächstes: Kontakt</h3>
+            <div id="d-cons" class="hint">Noch kein Kontakt.</div>
+            <div class="row">
+              <input type="text" id="cFirst" placeholder="Vorname" aria-label="Vorname">
+              <input type="text" id="cLast" placeholder="Nachname" aria-label="Nachname">
+              <button type="button" class="btn" id="addCon">Kontakt anlegen</button>
+            </div>
+          </section>
+          <div class="row"><button type="button" class="btn primary" id="again">Weitere anlegen</button></div>
+          <p class="note">Die neue <code>orgUuid</code> ist hier erfunden. Laut Spec liefert der 201 nur ein leeres
+            Objekt, das muss geklärt werden.</p>
+        </article>
+      </div>
     </div>
   </div>
-</div>
 
-<script>
-(function () {
-  var $ = function (id) { return document.getElementById(id); };
-  var sleep = function (ms) { return new Promise(function (r) { setTimeout(r, ms); }); };
-  var u = function (n) { return '7c1e5a20-3b4d-4e6f-8a9b-' + String(n).padStart(12, '0'); };
+  <script>
+    (function () {
+      var $ = function (id) { return document.getElementById(id); };
+      var sleep = function (ms) { return new Promise(function (r) { setTimeout(r, ms); }); };
+      var u = function (n) { return '7c1e5a20-3b4d-4e6f-8a9b-' + String(n).padStart(12, '0'); };
 
-  /* ---------- Beispieldaten ---------- */
-  var LEVEL_TYPES = [
-    { value: -1, label: 'Keine Ebene' },
-    { value: 3, label: 'Regierungsbezirk' }, { value: 4, label: 'Kreis' }, { value: 5, label: 'Gemeinde' },
-    , { value: 7, label: 'Krankenhaus' }, { value: 8, label: 'Leitstelle' },
-  ];
-  var ORG_TYPES = [
-    { value: -1, label: 'Keine Angabe', priv: false }, { value: 1, label: 'Hilfsorganisation', priv: true },
-    { value: 2, label: 'Krankenhaus', priv: false }, { value: 3, label: 'Leitstelle', priv: false },
-    { value: 4, label: 'Werkfeuerwehr (WF)', priv: true }, { value: 5, label: 'Berufsfeuerwehr (BF)', priv: false },
-    { value: 6, label: 'Freiwillige Feuerwehr (FF)', priv: false }, { value: 8, label: 'Rettungsdienst', priv: true },
-  ];
-  var LEVELS = {
-    3: [{ value: u(301), label: 'Regierungsbezirk Düsseldorf' }, { value: u(302), label: 'Regierungsbezirk Köln' }],
-    4: [{ value: u(401), label: 'Kreis Mettmann' }, { value: u(402), label: 'Rhein-Kreis Neuss' }, { value: u(403), label: 'Kreis Wesel' }],
-    5: [{ value: u(501), label: 'Erkrath' }, { value: u(502), label: 'Mettmann' }, { value: u(503), label: 'Hilden' }, { value: u(504), label: 'Haan' }],
-    6: [{ value: u(601), label: 'Hochdahl' }, { value: u(602), label: 'Unterfeldhaus' }],
-    7: [{ value: u(701), label: 'Evangelisches Krankenhaus Mettmann' }],
-    8: [{ value: u(801), label: 'Kreisleitstelle Mettmann' }],
-  };
-  var COMMUNITIES = [
-    { value: 1, label: 'Kreis Mettmann' }, { value: 2, label: 'Stadt Erkrath' }, { value: 3, label: 'Stadt Mettmann' },
-    { value: 4, label: 'Stadt Hilden' }, { value: 5, label: 'Rhein-Kreis Neuss' }, { value: 6, label: 'Stadt Haan' },
-    { value: 7, label: 'Stadt Ratingen' }, { value: 8, label: 'Stadt Langenfeld' }, { value: 9, label: 'Stadt Neuss' }, { value: 10, label: 'Stadt Wülfrath' }
-  ];
-  var levelLabel = function (id) { var t = LEVEL_TYPES.filter(function (x) { return x.value === id; })[0]; return t ? t.label : ''; };
-  var orgLabel = function (id) { var t = ORG_TYPES.filter(function (x) { return x.value === id; })[0]; return t ? t.label : ''; };
-  var communityLabel = function (id) { var t = COMMUNITIES.filter(function (x) { return x.value === Number(id); })[0]; return t ? t.label : ''; };
-  var parentOf = function (levelTypeId) { return levelTypeId > 1 && levelTypeId <= 6 ? levelTypeId - 1 : null; };
+      /* ---------- Beispieldaten (simulierte Backend-Antworten) ---------- */
+      var LEVEL_TYPES = [
+        { value: -1, label: 'Keine Ebene' }, { value: 1, label: 'Bund' }, { value: 2, label: 'Land' },
+        { value: 3, label: 'Regierungsbezirk' }, { value: 4, label: 'Kreis' }, { value: 5, label: 'Gemeinde' },
+        { value: 6, label: 'Ortsteil' }, { value: 7, label: 'Krankenhaus' }, { value: 8, label: 'Leitstelle' }, { value: 9, label: 'Standort' }
+      ];
+      var ORG_TYPES = [
+        { value: 8, label: 'Verwaltung', short: 'Land, Regierungsbezirk, Kreis oder Gemeinde', priv: false },
+        { value: 6, label: 'Freiwillige Feuerwehr', short: 'FF', priv: false },
+        { value: 5, label: 'Berufsfeuerwehr', short: 'BF', priv: false },
+        { value: 4, label: 'Werkfeuerwehr', short: 'WF', priv: true },
+        { value: 3, label: 'Leitstelle', short: '', priv: false },
+        { value: 2, label: 'Krankenhaus', short: '', priv: false },
+        { value: 1, label: 'Hilfsorganisation', short: '', priv: true }
+      ];
+      var LEVELS = {
+        1: [{ value: u(101), label: 'Bundesrepublik Deutschland' }],
+        2: [{ value: u(201), label: 'Nordrhein-Westfalen' }, { value: u(202), label: 'Hessen' }],
+        3: [{ value: u(301), label: 'Regierungsbezirk Düsseldorf' }, { value: u(302), label: 'Regierungsbezirk Köln' }],
+        4: [{ value: u(401), label: 'Kreis Mettmann' }, { value: u(402), label: 'Kreis Borken' }, { value: u(403), label: 'Kreis Paderborn' }],
+        5: [{ value: u(501), label: 'Erkrath' }, { value: u(502), label: 'Meerbusch' }, { value: u(503), label: 'Mettmann' }, { value: u(504), label: 'Hilden' }],
+        6: [{ value: u(601), label: 'Hochdahl' }, { value: u(602), label: 'Unterfeldhaus' }],
+        7: [{ value: u(701), label: 'Evangelisches Krankenhaus Mettmann' }],
+        8: [{ value: u(801), label: 'Kreisleitstelle Mettmann' }],
+        9: [{ value: u(901), label: 'Wache 1 Erkrath' }]
+      };
+      var COMMUNITIES = [
+        { value: 1, label: 'Kreis Mettmann' }, { value: 2, label: 'Stadt Erkrath' }, { value: 3, label: 'Stadt Mettmann' },
+        { value: 4, label: 'Stadt Meerbusch' }, { value: 5, label: 'Stadt Hilden' }, { value: 6, label: 'Kreis Borken' },
+        { value: 7, label: 'Kreis Paderborn' }, { value: 8, label: 'Stadt Haan' }, { value: 9, label: 'Stadt Ratingen' }
+      ];
+      var levelLabel = function (id) { var t = LEVEL_TYPES.filter(function (x) { return x.value === id; })[0]; return t ? t.label : ''; };
+      var orgLabel = function (id) { var t = ORG_TYPES.filter(function (x) { return x.value === id; })[0]; return t ? t.label : ''; };
 
-  /* ---------- Simulierte API ---------- */
-  async function call(method, path, query, status, compute) {
-    await sleep(100);
-    return compute ? compute() : null;
-  }
-  var fq = function (f) { return f && Object.keys(f).length ? 'filter=' + JSON.stringify(f) : null; };
-  function getOrgTypes(filter) {
-    return call('GET', '/api/organisations/orgtypes/select', fq(filter), 200, function () {
-      return { options: ORG_TYPES.filter(function (o) { return !(filter && filter.privateOrg === true) || o.priv; }) };
-    });
-  }
-  function getLevelTypes() {
-    return call('GET', '/api/organisations/leveltypes/select', null, 200, function () { return { options: LEVEL_TYPES }; });
-  }
-  function getLevels(filter) {
-    return call('GET', '/api/organisations/level/select', fq(filter), 200, function () {
-      var list = LEVELS[filter.levelTypeId] || [];
-      return { options: list, defaultValue: filter.levelTypeId >= 4 && list.length ? list[0].value : undefined };
-    });
-  }
+      /* ---------- Simulierte API ---------- */
+      async function call(method, path, query, status, compute) {
+        await sleep(200 + Math.random() * 260);
+        return compute ? compute() : null;
+      }
+      var fq = function (f) { return f && Object.keys(f).length ? 'filter=' + JSON.stringify(f) : null; };
+      function getOrgTypes(filter) {
+        return call('GET', '/api/organisations/orgtypes/select', fq(filter), 200, function () {
+          return { options: ORG_TYPES.filter(function (o) { return !(filter && filter.privateOrg === true) || o.priv; }) };
+        });
+      }
+      function getLevelTypes() {
+        return call('GET', '/api/organisations/leveltypes/select', null, 200, function () { return { options: LEVEL_TYPES }; });
+      }
+      function getLevels(filter) {
+        return call('GET', '/api/organisations/level/select', fq(filter), 200, function () {
+          var list = LEVELS[filter.levelTypeId] || [];
+          /* Annahme: Die Liste ist auf die Rechte des Nutzers begrenzt, das defaultValue ist seine eigene Einheit. */
+          return { options: list, defaultValue: filter.levelTypeId >= 4 && list.length ? list[0].value : undefined };
+        });
+      }
+      function getCommunities() {
+        return call('GET', '/api/organisations/community/select', null, 200, function () { return { options: COMMUNITIES }; });
+      }
 
-  /* ---------- Zustand ---------- */
-  var STEPS = ['Art', 'Zuordnung', 'Angaben', 'Prüfen'];
-  var FIELD_STEP = { orgtypeId: 1, levelTypeId: 2, levelUuid: 2, communityId: 2, name: 3, postcode: 3, city: 3, email: 3 };
-  var step = 1, maxStep = 1, mode = 'org', lastCreated = null;
-  var attempted = {}, touched = {};
-  var allLevelTypes = [];
-  var tok = { org: 0, level: 0 };
+      /* ---------- Zustand ---------- */
+      var STEPS = ['Art', 'Zuordnung', 'Angaben', 'Prüfen'];
+      var FIELD_STEP = { orgtypeId: 1, levelTypeId: 2, levelUuid: 2, communityId: 2, name: 3, postcode: 3, city: 3, email: 3 };
+      var step = 1, maxStep = 1, orgtype = '', community = null, lastCreated = null;
+      var attempted = {}, touched = {};
+      var allLevelTypes = [];
+      var lastSuggestKey = '';
+      var tok = { org: 0, level: 0, search: 0, suggest: 0 };
+      var searchTimer = null;
 
-  /* ---------- Select-Helfer ---------- */
-  function lock(sel, text) { sel.innerHTML = ''; sel.appendChild(new Option(text, '')); sel.disabled = true; sel.setAttribute('aria-busy', 'true'); }
-  function lockStatic(sel, text) { lock(sel, text); sel.removeAttribute('aria-busy'); }
-  function fill(sel, options, placeholder, keep) {
-    sel.innerHTML = '';
-    sel.appendChild(new Option(placeholder, ''));
-    options.forEach(function (o) { sel.appendChild(new Option(o.label, String(o.value))); });
-    sel.disabled = false;
-    sel.removeAttribute('aria-busy');
-    if (keep && options.some(function (o) { return String(o.value) === keep; })) sel.value = keep;
-  }
-  var selText = function (sel) { return sel.value && sel.selectedIndex > -1 ? sel.options[sel.selectedIndex].text : ''; };
+      /* ---------- Select-Helfer ---------- */
+      function lock(sel, text) { sel.innerHTML = ''; sel.appendChild(new Option(text, '')); sel.disabled = true; sel.setAttribute('aria-busy', 'true'); }
+      function lockStatic(sel, text) { lock(sel, text); sel.removeAttribute('aria-busy'); }
+      function fill(sel, options, placeholder, keep) {
+        sel.innerHTML = '';
+        sel.appendChild(new Option(placeholder, ''));
+        options.forEach(function (o) { sel.appendChild(new Option(o.label, String(o.value))); });
+        sel.disabled = false;
+        sel.removeAttribute('aria-busy');
+        if (keep && options.some(function (o) { return String(o.value) === keep; })) sel.value = keep;
+      }
+      var selText = function (sel) { return sel.value && sel.selectedIndex > -1 ? sel.options[sel.selectedIndex].text : ''; };
 
-  /* ---------- Laden ---------- */
-  async function loadOrgTypes() {
-    var my = ++tok.org, keep = $('orgtypeId').value;
-    lock($('orgtypeId'), 'Lädt …');
-    var r = await getOrgTypes($('privateOrg').checked ? { privateOrg: true } : {});
-    if (my !== tok.org) return;
-    fill($('orgtypeId'), r.options.filter(function (o) { return o.value !== -1; }), '– bitte wählen –', keep);
-    update();
-  }
-  function fillLevelTypes() {
-    var keep = $('levelTypeId').value;
-    var opts = mode === 'unit' ? allLevelTypes.filter(function (o) { return o.value >= 1 && o.value <= 6; }) : allLevelTypes;
-    fill($('levelTypeId'), opts, mode === 'unit' ? '– bitte wählen –' : '– keine Angabe –', keep);
-  }
-  async function loadLevelTypes() {
-    lock($('levelTypeId'), 'Lädt …');
-    var r = await getLevelTypes();
-    allLevelTypes = r.options;
-    fillLevelTypes();
-    update();
-  }
-  function lockUnit() {
-    var v = $('levelTypeId').value;
-    lockStatic($('levelUuid'), v === '' ? 'Erst Ebene wählen' : (v === '-1' ? 'Keine Ebene gewählt' : 'Keine übergeordnete Einheit'));
-  }
-  async function onLevelType() {
-    var v = $('levelTypeId').value, sel = $('levelUuid'), my = ++tok.level;
-    delete sel.dataset.preset;
-    var typeForList = v === '' || v === '-1' ? null : (mode === 'unit' ? parentOf(Number(v)) : Number(v));
-    if (typeForList === null) { lockUnit(); update(); return; }
-    lock(sel, 'Lädt …');
-    update();
-    var r = await getLevels({ levelTypeId: typeForList });
-    if (my !== tok.level) return;
-    fill(sel, r.options, '– bitte wählen –');
-    if (r.defaultValue) { sel.value = String(r.defaultValue); sel.dataset.preset = '1'; }
-    update();
-  }
+      /* ---------- Organisationsart als Karten ---------- */
+      function renderOrgTypes(options) {
+        var grid = $('orgtypeId');
+        grid.innerHTML = '';
+        options.forEach(function (o) {
+          var lb = document.createElement('label'); lb.className = 'opt';
+          var inp = document.createElement('input'); inp.type = 'radio'; inp.name = 'orgtype'; inp.value = String(o.value);
+          inp.checked = String(o.value) === orgtype;
+          inp.addEventListener('change', function () { orgtype = inp.value; touched.orgtypeId = true; update(); });
+          var st = document.createElement('strong'); st.textContent = o.label;
+          lb.appendChild(inp); lb.appendChild(st);
+          if (o.short) { var sp = document.createElement('span'); sp.textContent = o.short; lb.appendChild(sp); }
+          grid.appendChild(lb);
+        });
+      }
+      function selectOrgType(v) {
+        orgtype = String(v);
+        var r = document.querySelector('input[name=orgtype][value="' + orgtype + '"]');
+        if (r) r.checked = true;
+      }
+      async function loadOrgTypes() {
+        var my = ++tok.org;
+        var grid = $('orgtypeId');
+        grid.innerHTML = '<div class="hint">Lädt …</div>';
+        var r = await getOrgTypes($('privateOrg').checked ? { privateOrg: true } : {});
+        if (my !== tok.org) return;
+        if (!r.options.some(function (o) { return String(o.value) === orgtype; })) orgtype = '';
+        renderOrgTypes(r.options);
+        update();
+      }
 
-  function initCommunities() {
-    var sel = $('communityId');
-    fill(sel, COMMUNITIES, '– bitte wählen (optional) –');
-  }
+      /* ---------- Ebene und Einheit ---------- */
+      function fillLevelTypes() {
+        fill($('levelTypeId'), allLevelTypes, '– keine Angabe –', $('levelTypeId').value);
+      }
+      async function loadLevelTypes() {
+        lock($('levelTypeId'), 'Lädt …');
+        var r = await getLevelTypes();
+        allLevelTypes = r.options;
+        fillLevelTypes();
+        update();
+      }
+      function lockUnit() {
+        var v = $('levelTypeId').value;
+        lockStatic($('levelUuid'), v === '' ? 'Erst Ebene wählen' : 'Keine Einheit');
+      }
+      async function onLevelType() {
+        var v = $('levelTypeId').value, sel = $('levelUuid'), my = ++tok.level;
+        delete sel.dataset.preset;
+        if (v === '' || v === '-1') { lockUnit(); onUnitChange(); update(); return; }
+        lock(sel, 'Lädt …');
+        update();
+        var r = await getLevels({ levelTypeId: Number(v) });
+        if (my !== tok.level) return;
+        fill(sel, r.options, '– bitte wählen –');
+        if (r.defaultValue) { sel.value = String(r.defaultValue); sel.dataset.preset = '1'; }
+        onUnitChange();
+        update();
+      }
+      function onUnitChange() { suggestCommunity(); }
 
-  /* ---------- Art (Schalter) ---------- */
-  function setMode(m) {
-    mode = m;
-    document.querySelector('input[name=mode][value=' + m + ']').checked = true;
-    var unit = m === 'unit';
-    $('orgtypeBox').hidden = unit;
-    $('unitFixed').hidden = !unit;
-    $('lbl-level').textContent = unit ? 'Art der Einheit' : 'Ebene';
-    $('lbl-unit').textContent = unit ? 'Übergeordnete Einheit' : 'Zugehörige Einheit';
-    $('sub2').textContent = unit ? 'Wähle, was du anlegst, und zu welcher Einheit es gehört.' : 'Ordne die Organisation ihrem Träger zu. Die Einheit ist mit deiner eigenen vorbelegt, wenn es sie gibt.';
-    fillLevelTypes();
-    $('levelTypeId').value = '';
-    $('orgtypeId').value = '';
-    lockUnit();
-  }
+      /* ---------- Community: Auswahlliste und Vorschlag ---------- */
+      var communityOptions = [];
+      async function loadCommunities() {
+        var r = await getCommunities();
+        communityOptions = r.options;
+        var sel = $('communityId'), cur = sel.value;
+        sel.innerHTML = '<option value="">– bitte wählen –</option>';
+        communityOptions.forEach(function (c) { var o = document.createElement('option'); o.value = c.value; o.textContent = c.label; sel.appendChild(o); });
+        sel.value = cur;
+      }
+      function pickCommunity(c) {
+        community = { value: c.value, label: c.label };
+        $('communityId').value = String(c.value);
+        $('communitySuggest').hidden = true;
+        update();
+      }
+      function clearCommunity(silent) {
+        community = null;
+        $('communityId').value = '';
+        $('communitySuggest').hidden = true;
+        lastSuggestKey = '';
+        if (!silent) update();
+      }
+      $('communityId').addEventListener('change', function () {
+        var v = $('communityId').value;
+        community = v ? { value: Number(v), label: selText($('communityId')) } : null;
+        $('communitySuggest').hidden = true;
+        update();
+      });
 
-  /* ---------- Werte und Validierung ---------- */
-  var num = function (v) { return v === '' ? undefined : Number(v); };
-  var txt = function (id) { return $(id).value.trim() || undefined; };
-  function values() {
-    var p = {};
-    p.name = txt('name');
-    p.levelTypeId = num($('levelTypeId').value);
-    p.orgtypeId = mode === 'unit' ? -1 : num($('orgtypeId').value);
-    p.levelUuid = $('levelUuid').value || undefined;
-    p.communityId = num($('communityId').value);
-    ['phone', 'fax', 'email', 'street', 'hnr', 'city', 'postcode'].forEach(function (k) { p[k] = txt(k); });
-    return p;
-  }
-  var UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
-  function validate(p) {
-    var e = {};
-    if (mode === 'org' && p.orgtypeId === undefined) e.orgtypeId = 'Bitte eine Organisationsart wählen.';
-    if (mode === 'unit' && p.levelTypeId === undefined) e.levelTypeId = 'Bitte die Art der Einheit wählen.';
-    if (p.levelTypeId !== undefined && p.levelTypeId !== -1 && !p.levelUuid && !$('levelUuid').disabled) e.levelUuid = 'Bitte eine Einheit wählen.';
-    if (p.levelUuid && !UUID.test(p.levelUuid)) e.levelUuid = 'Die Einheit hat keine gültige UUID.';
-    if (p.communityId !== undefined && !(p.communityId >= 1)) e.communityId = 'Die Gemeinde-ID muss mindestens 1 sein.';
-    if (!p.name) e.name = 'Bitte einen Namen eingeben.';
-    if (!p.postcode) e.postcode = 'Bitte die Postleitzahl eingeben.';
-    if (!p.city) e.city = 'Bitte den Ort eingeben.';
-    if (p.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(p.email)) e.email = 'Das ist keine gültige E-Mail-Adresse.';
-    return e;
-  }
-  var ERR_IDS = ['orgtypeId', 'levelTypeId', 'levelUuid', 'communityId', 'name', 'postcode', 'city', 'email'];
-  function renderErrors(errs) {
-    ERR_IDS.forEach(function (id) {
-      var show = (attempted[FIELD_STEP[id]] || touched[id]) && errs[id];
-      $('e-' + id).textContent = show ? errs[id] : '';
-      var el = $(id);
-      if (el) { if (show) el.setAttribute('aria-invalid', 'true'); else el.removeAttribute('aria-invalid'); }
-    });
-  }
-  function stepErrors(n, errs) { return ERR_IDS.filter(function (id) { return FIELD_STEP[id] === n && errs[id]; }); }
+      /* Vorschlag: Die Community passt oft zur gewählten Einheit. */
+      function suggestCommunity() {
+        var btn = $('communitySuggest');
+        var label = selText($('levelUuid'));
+        if (community || !label || $('levelUuid').disabled) { btn.hidden = true; return; }
+        if (label === lastSuggestKey) return;
+        lastSuggestKey = label;
+        var s = label.toLowerCase();
+        var hit = communityOptions.filter(function (c) { return c.label.toLowerCase().indexOf(s) > -1; })[0];
+        if (!hit) { btn.hidden = true; return; }
+        btn.textContent = 'Vorschlag übernehmen: ' + hit.label;
+        btn.onclick = function () { pickCommunity(hit); };
+        btn.hidden = false;
+      }
 
-  /* ---------- Fortschritt und Navigation ---------- */
-  function renderStepper() {
-    var ol = $('stepper'); ol.innerHTML = '';
-    STEPS.forEach(function (label, i) {
-      var n = i + 1;
-      var li = document.createElement('li');
-      li.className = (n === step ? 'cur' : '') + (n < step ? ' done' : '');
-      var b = document.createElement('button'); b.type = 'button'; b.className = 'st'; b.disabled = n > maxStep;
-      if (n === step) b.setAttribute('aria-current', 'step');
-      b.setAttribute('aria-label', 'Schritt ' + n + ': ' + label);
-      var nm = document.createElement('span'); nm.className = 'num'; nm.textContent = n < step ? '✓' : String(n);
-      var lb = document.createElement('span'); lb.className = 'lab'; lb.textContent = label;
-      b.appendChild(nm); b.appendChild(lb);
-      b.addEventListener('click', function () { goTo(n); });
-      li.appendChild(b); ol.appendChild(li);
-    });
-  }
-  function updateNav() {
-    $('back').hidden = step === 1;
-    var next = $('next');
-    next.textContent = step < 4 ? 'Weiter' : (mode === 'unit' ? 'Verwaltungseinheit anlegen' : 'Organisation anlegen');
-  }
-  function showStep(focus) {
-    for (var n = 1; n <= 4; n++) $('s' + n).hidden = n !== step;
-    renderStepper();
-    if (step === 4) renderSummary();
-    updateNav();
-    if (focus) $('t' + step).focus();
-  }
-  function goTo(n) { if (n > maxStep) return; step = n; showStep(true); }
-  function focusFirstInvalid() {
-    var bad = document.querySelector('#s' + step + ' [aria-invalid="true"]');
-    if (!bad) return;
-    var d = bad.closest('details'); if (d) d.open = true;
-    bad.focus();
-  }
-  function handleNext() {
-    var errs = validate(values());
-    if (step < 4) {
-      attempted[step] = true;
+      /* ---------- Werte und Validierung ---------- */
+      var num = function (v) { return v === '' ? undefined : Number(v); };
+      var txt = function (id) { return $(id).value.trim() || undefined; };
+      function values() {
+        var p = {};
+        p.name = txt('name');
+        p.levelTypeId = num($('levelTypeId').value);
+        p.orgtypeId = num(orgtype);
+        p.levelUuid = $('levelUuid').value || undefined;
+        p.communityId = community ? community.value : undefined;
+        ['phone', 'fax', 'email', 'street', 'hnr', 'city', 'postcode'].forEach(function (k) { p[k] = txt(k); });
+        return p;
+      }
+      var UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+      function validate(p) {
+        var e = {};
+        if (p.orgtypeId === undefined) e.orgtypeId = 'Bitte eine Organisationsart wählen.';
+        if (p.levelTypeId !== undefined && p.levelTypeId !== -1 && !p.levelUuid && !$('levelUuid').disabled) e.levelUuid = 'Bitte eine Einheit wählen.';
+        if (p.levelUuid && !UUID.test(p.levelUuid)) e.levelUuid = 'Die Einheit hat keine gültige UUID.';
+        if (p.communityId === undefined) e.communityId = 'Bitte eine Community wählen.';
+        else if (!(p.communityId >= 1)) e.communityId = 'Die Community-ID muss mindestens 1 sein.';
+        if (!p.name) e.name = 'Bitte einen Namen eingeben.';
+        if (!p.postcode) e.postcode = 'Bitte die Postleitzahl eingeben.';
+        if (!p.city) e.city = 'Bitte den Ort eingeben.';
+        if (p.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(p.email)) e.email = 'Das ist keine gültige E-Mail-Adresse.';
+        return e;
+      }
+      var ERR_IDS = ['orgtypeId', 'levelTypeId', 'levelUuid', 'communityId', 'name', 'postcode', 'city', 'email'];
+      function renderErrors(errs) {
+        ERR_IDS.forEach(function (id) {
+          var show = (attempted[FIELD_STEP[id]] || touched[id]) && errs[id];
+          $('e-' + id).textContent = show ? errs[id] : '';
+          var el = $(id);
+          if (el) { if (show) el.setAttribute('aria-invalid', 'true'); else el.removeAttribute('aria-invalid'); }
+        });
+      }
+      function stepErrors(n, errs) { return ERR_IDS.filter(function (id) { return FIELD_STEP[id] === n && errs[id]; }); }
+
+      /* ---------- Fortschritt und Navigation ---------- */
+      function renderStepper() {
+        var ol = $('stepper'); ol.innerHTML = '';
+        STEPS.forEach(function (label, i) {
+          var n = i + 1;
+          var li = document.createElement('li');
+          li.className = (n === step ? 'cur' : '') + (n < step ? ' done' : '');
+          var b = document.createElement('button'); b.type = 'button'; b.className = 'st'; b.disabled = n > maxStep;
+          if (n === step) b.setAttribute('aria-current', 'step');
+          b.setAttribute('aria-label', 'Schritt ' + n + ': ' + label);
+          var nm = document.createElement('span'); nm.className = 'num'; nm.textContent = n < step ? '✓' : String(n);
+          var lb = document.createElement('span'); lb.className = 'lab'; lb.textContent = label;
+          b.appendChild(nm); b.appendChild(lb);
+          b.addEventListener('click', function () { goTo(n); });
+          li.appendChild(b); ol.appendChild(li);
+        });
+      }
+      function updateNav() {
+        $('back').hidden = step === 1;
+        $('next').textContent = step < 4 ? 'Weiter' : 'Organisation anlegen';
+      }
+      function showStep(focus) {
+        for (var n = 1; n <= 4; n++) $('s' + n).hidden = n !== step;
+        renderStepper();
+        if (step === 4) renderSummary();
+        updateNav();
+        if (focus) $('t' + step).focus();
+      }
+      function goTo(n) { if (n > maxStep) return; step = n; showStep(true); }
+      function focusFirstInvalid() {
+        var bad = document.querySelector('#s' + step + ' [aria-invalid="true"]');
+        if (!bad) return;
+        var d = bad.closest('details'); if (d) d.open = true;
+        bad.focus();
+      }
+      function handleNext() {
+        var errs = validate(values());
+        if (step < 4) {
+          attempted[step] = true;
+          update();
+          if (stepErrors(step, errs).length) { focusFirstInvalid(); return; }
+          step++; maxStep = Math.max(maxStep, step);
+          showStep(true);
+          return;
+        }
+        if (Object.keys(errs).length) {
+          attempted[1] = attempted[2] = attempted[3] = true; update();
+          for (var n = 1; n <= 3; n++) { if (stepErrors(n, errs).length) { step = n; showStep(false); focusFirstInvalid(); return; } }
+        }
+        create(values());
+      }
+      $('wiz').addEventListener('submit', function (e) { e.preventDefault(); handleNext(); });
+      $('back').addEventListener('click', function () { if (step > 1) { step--; showStep(true); } });
+
+      /* ---------- Zusammenfassung ---------- */
+      function renderSummary() {
+        var p = values(), box = $('summary');
+        box.innerHTML = '';
+        function section(title, target, rows) {
+          var s = document.createElement('div'); s.className = 'sumsec';
+          var h = document.createElement('div'); h.className = 'sumhead';
+          var t = document.createElement('h3'); t.textContent = title;
+          var b = document.createElement('button'); b.type = 'button'; b.className = 'btn link'; b.textContent = 'Ändern';
+          b.addEventListener('click', function () { goTo(target); });
+          h.appendChild(t); h.appendChild(b); s.appendChild(h);
+          var dl = document.createElement('dl'); dl.className = 'kv';
+          rows.forEach(function (r) { if (!r[1]) return; var dt = document.createElement('dt'); dt.textContent = r[0]; var dd = document.createElement('dd'); dd.textContent = r[1]; dl.appendChild(dt); dl.appendChild(dd); });
+          s.appendChild(dl); box.appendChild(s);
+        }
+        section('Art', 1, [['Organisationsart', orgLabel(p.orgtypeId)]]);
+        section('Zuordnung', 2, [['Ebene', p.levelTypeId !== undefined ? levelLabel(p.levelTypeId) : 'Keine Angabe'], ['Einheit', selText($('levelUuid')) || 'Keine Angabe'], ['Community', community ? community.label : 'Keine Angabe']]);
+        section('Angaben', 3, [
+          ['Name', p.name],
+          ['Adresse', [[p.street, p.hnr].filter(Boolean).join(' '), [p.postcode, p.city].filter(Boolean).join(' ')].filter(Boolean).join(', ')],
+          ['Telefon', p.phone], ['Fax', p.fax], ['E-Mail', p.email]
+        ]);
+      }
+
+      function update() {
+        var p = values(), errs = validate(p);
+        renderErrors(errs);
+        var lv = $('levelTypeId').value, hl = $('h-levelUuid');
+        if (lv === '') hl.textContent = 'Wähle zuerst eine Ebene.';
+        else if (lv === '-1') hl.textContent = 'Zur Ebene „Keine Ebene“ gibt es keine Einheiten.';
+        else hl.textContent = $('levelUuid').dataset.preset === '1' ? 'Vorbelegt mit deiner eigenen Einheit.' : '';
+        var remaining = step < 4 ? stepErrors(step, errs).length : 0;
+        $('status').textContent = step < 4 ? 'Schritt ' + step + ' von 4' + (remaining ? ' · noch ' + remaining + ' Pflichtangabe' + (remaining > 1 ? 'n' : '') : '') : 'Alles geprüft';
+      }
+
+      /* ---------- Ereignisse ---------- */
+      $('levelTypeId').addEventListener('change', function () { touched.levelUuid = false; onLevelType(); });
+      $('levelUuid').addEventListener('change', function () { delete $('levelUuid').dataset.preset; lastSuggestKey = ''; onUnitChange(); update(); });
+      $('privateOrg').addEventListener('change', loadOrgTypes);
+      $('wiz').addEventListener('input', update);
+      $('wiz').addEventListener('change', update);
+      $('wiz').addEventListener('focusout', function (e) { if (e.target && e.target.id) { touched[e.target.id] = true; update(); } });
+
+      /* ---------- Anlegen und Erfolgsseite ---------- */
+      async function create(p) {
+        var btn = $('next'), label = btn.textContent;
+        btn.disabled = true; btn.textContent = 'Wird gesendet …';
+        await call('POST', '/api/organisations', null, 201);
+        btn.disabled = false; btn.textContent = label;
+        lastCreated = { uuid: u(9000 + Math.floor(Math.random() * 900)), p: p, locs: [], cons: [] };
+        showDone();
+      }
+      function showDone() {
+        var c = lastCreated, p = c.p;
+        $('wiz').hidden = true; $('done').hidden = false;
+        $('d-name').textContent = p.name;
+        var dl = $('d-list'); dl.innerHTML = '';
+        function row(k, v) { if (!v) return; var dt = document.createElement('dt'); dt.textContent = k; var dd = document.createElement('dd'); dd.textContent = v; dl.appendChild(dt); dl.appendChild(dd); }
+        row('Art', orgLabel(p.orgtypeId));
+        row('Ebene', p.levelTypeId !== undefined ? levelLabel(p.levelTypeId) : '');
+        row('Community', community ? community.label : '');
+        row('Adresse', [[p.street, p.hnr].filter(Boolean).join(' '), [p.postcode, p.city].filter(Boolean).join(' ')].filter(Boolean).join(', '));
+        row('Telefon', p.phone); row('E-Mail', p.email); row('orgUuid', c.uuid);
+        $('d-locs').textContent = 'Noch kein Standort.'; $('d-cons').textContent = 'Noch kein Kontakt.';
+        $('addLoc').disabled = false;
+        $('done').scrollIntoView({ block: 'nearest' });
+      }
+      function renderList(el, items, empty) {
+        el.innerHTML = '';
+        if (!items.length) { el.textContent = empty; return; }
+        items.forEach(function (t) { var d = document.createElement('div'); d.textContent = t.text; if (t.tag) { var g = document.createElement('span'); g.className = 'tag'; g.textContent = t.tag; d.appendChild(document.createTextNode(' ')); d.appendChild(g); } el.appendChild(d); });
+      }
+      $('addLoc').addEventListener('click', async function () {
+        var c = lastCreated, p = c.p;
+        $('addLoc').disabled = true;
+        await call('POST', '/api/organisations/' + c.uuid + '/location', null, 201);
+        c.locs.push({ text: [[p.street, p.hnr].filter(Boolean).join(' '), [p.postcode, p.city].filter(Boolean).join(' ')].filter(Boolean).join(', '), tag: 'Hauptstandort' });
+        renderList($('d-locs'), c.locs, 'Noch kein Standort.');
+      });
+      $('addCon').addEventListener('click', async function () {
+        var f = $('cFirst').value.trim(), l = $('cLast').value.trim();
+        if (!f && !l) { $('cFirst').focus(); return; }
+        var c = lastCreated;
+        await call('POST', '/api/organisations/' + c.uuid + '/contact', null, 201);
+        c.cons.push({ text: (f + ' ' + l).trim() });
+        $('cFirst').value = ''; $('cLast').value = '';
+        renderList($('d-cons'), c.cons, 'Noch kein Kontakt.');
+      });
+      $('again').addEventListener('click', function () { resetAll(); });
+
+      /* ---------- Zurücksetzen ---------- */
+      function resetAll() {
+        $('wiz').reset();
+        tok.level++; tok.suggest++;
+        attempted = {}; touched = {}; step = 1; maxStep = 1; lastCreated = null;
+        orgtype = ''; lastSuggestKey = '';
+        $('more').open = false;
+        $('done').hidden = true; $('wiz').hidden = false;
+        clearCommunity(true);
+        fillLevelTypes();
+        $('levelTypeId').value = '';
+        lockUnit();
+        loadOrgTypes();
+        showStep(false);
+        update();
+      }
+      /* ---------- Start ---------- */
+      lockUnit();
+      showStep(false);
       update();
-      if (stepErrors(step, errs).length) { focusFirstInvalid(); return; }
-      step++; maxStep = Math.max(maxStep, step);
-      showStep(true);
-      return;
-    }
-    var all = Object.keys(errs);
-    if (all.length) {
-      attempted[1] = attempted[2] = attempted[3] = true; update();
-      for (var n = 1; n <= 3; n++) { if (stepErrors(n, errs).length) { step = n; showStep(false); focusFirstInvalid(); return; } }
-    }
-    create(values());
-  }
-  $('wiz').addEventListener('submit', function (e) { e.preventDefault(); handleNext(); });
-  $('back').addEventListener('click', function () { if (step > 1) { step--; showStep(true); } });
+      Promise.all([loadOrgTypes(), loadLevelTypes(), loadCommunities()]).then(update);
+    })();
+  </script>
 
-  /* ---------- Zusammenfassung ---------- */
-  function renderSummary() {
-    var p = values(), box = $('summary');
-    box.innerHTML = '';
-    function section(title, target, rows) {
-      var s = document.createElement('div'); s.className = 'sumsec';
-      var h = document.createElement('div'); h.className = 'sumhead';
-      var t = document.createElement('h3'); t.textContent = title;
-      var b = document.createElement('button'); b.type = 'button'; b.className = 'btn link'; b.textContent = 'Ändern';
-      b.addEventListener('click', function () { goTo(target); });
-      h.appendChild(t); h.appendChild(b); s.appendChild(h);
-      var dl = document.createElement('dl'); dl.className = 'kv';
-      rows.forEach(function (r) { if (!r[1]) return; var dt = document.createElement('dt'); dt.textContent = r[0]; var dd = document.createElement('dd'); dd.textContent = r[1]; dl.appendChild(dt); dl.appendChild(dd); });
-      s.appendChild(dl); box.appendChild(s);
-    }
-    section('Art', 1, [['Anlegen als', mode === 'unit' ? 'Verwaltungseinheit' : 'Organisation'], ['Organisationsart', mode === 'unit' ? '' : orgLabel(p.orgtypeId)]]);
-    section('Zuordnung', 2, [['Ebene', p.levelTypeId !== undefined ? levelLabel(p.levelTypeId) : 'Keine Angabe'], ['Einheit', selText($('levelUuid')) || 'Keine Angabe'], ['Gemeinde', p.communityId ? communityLabel(p.communityId) : 'Keine Angabe']]);
-    section('Angaben', 3, [
-      ['Name', p.name],
-      ['Adresse', [[p.street, p.hnr].filter(Boolean).join(' '), [p.postcode, p.city].filter(Boolean).join(' ')].filter(Boolean).join(', ')],
-      ['Telefon', p.phone], ['Fax', p.fax], ['E-Mail', p.email]
-    ]);
-  }
+</body>
 
-  function update() {
-    var p = values(), errs = validate(p);
-    renderErrors(errs);
-    var lv = $('levelTypeId').value, unit = mode === 'unit', hl = $('h-levelUuid');
-    if (lv === '') hl.textContent = 'Wähle zuerst eine Ebene.';
-    else if (lv === '-1') hl.textContent = 'Zur Ebene „Keine Ebene“ gibt es keine Einheiten.';
-    else if (unit && parentOf(Number(lv)) === null) hl.textContent = 'Der Bund hat keine übergeordnete Einheit.';
-    else if (unit) hl.textContent = 'Liste der Ebene „' + levelLabel(parentOf(Number(lv))) + '“.';
-    else hl.textContent = $('levelUuid').dataset.preset === '1' ? 'Vorbelegt mit deiner eigenen Einheit.' : '';
-    $('h-level').textContent = unit ? 'Die Art der neuen Einheit, zum Beispiel Gemeinde.' : 'Die Ebene des Trägers. Leer lassen, wenn es keine gibt.';
-    var remaining = step < 4 ? stepErrors(step, errs).length : 0;
-    $('status').textContent = step < 4 ? 'Schritt ' + step + ' von 4' + (remaining ? ' · noch ' + remaining + ' Pflichtangabe' + (remaining > 1 ? 'n' : '') : '') : 'Alles geprüft';
-  }
-
-  /* ---------- Ereignisse ---------- */
-  document.querySelectorAll('input[name=mode]').forEach(function (r) {
-    r.addEventListener('change', function () { attempted = {}; touched = {}; setMode(r.value); update(); });
-  });
-  $('levelTypeId').addEventListener('change', function () { touched.levelUuid = false; onLevelType(); });
-  $('levelUuid').addEventListener('change', function () { delete $('levelUuid').dataset.preset; update(); });
-  $('privateOrg').addEventListener('change', loadOrgTypes);
-  $('wiz').addEventListener('input', update);
-  $('wiz').addEventListener('change', update);
-  $('wiz').addEventListener('focusout', function (e) { if (e.target && e.target.id) { touched[e.target.id] = true; update(); } });
-
-  /* ---------- Anlegen und Erfolgsseite ---------- */
-  async function create(p) {
-    var btn = $('next'), label = btn.textContent;
-    btn.disabled = true; btn.textContent = 'Wird gesendet …';
-    await sleep(200);
-    btn.textContent = label; updateNav();
-    lastCreated = { uuid: u(9000 + Math.floor(Math.random() * 900)), p: p, locs: [], cons: [] };
-    showDone();
-  }
-  function showDone() {
-    var c = lastCreated, p = c.p;
-    $('wiz').hidden = true; $('done').hidden = false;
-    $('d-name').textContent = p.name;
-    var dl = $('d-list'); dl.innerHTML = '';
-    function row(k, v) { if (!v) return; var dt = document.createElement('dt'); dt.textContent = k; var dd = document.createElement('dd'); dd.textContent = v; dl.appendChild(dt); dl.appendChild(dd); }
-    row('Art', p.orgtypeId === -1 ? 'Verwaltungseinheit' : orgLabel(p.orgtypeId));
-    row('Ebene', p.levelTypeId !== undefined ? levelLabel(p.levelTypeId) : '');
-    row('Gemeinde', p.communityId ? communityLabel(p.communityId) : '');
-    row('Adresse', [[p.street, p.hnr].filter(Boolean).join(' '), [p.postcode, p.city].filter(Boolean).join(' ')].filter(Boolean).join(', '));
-    row('Telefon', p.phone); row('E-Mail', p.email); row('orgUuid', c.uuid);
-    $('d-locs').textContent = 'Noch kein Standort.'; $('d-cons').textContent = 'Noch kein Kontakt.';
-    $('addLoc').disabled = false;
-    $('done').scrollIntoView({ block: 'nearest' });
-  }
-  function renderList(el, items, empty) {
-    el.innerHTML = '';
-    if (!items.length) { el.textContent = empty; return; }
-    items.forEach(function (t) { var d = document.createElement('div'); d.textContent = t.text; if (t.tag) { var g = document.createElement('span'); g.className = 'tag'; g.textContent = t.tag; d.appendChild(document.createTextNode(' ')); d.appendChild(g); } el.appendChild(d); });
-  }
-  $('addLoc').addEventListener('click', async function () {
-    var c = lastCreated, p = c.p;
-    $('addLoc').disabled = true;
-    await sleep(200);
-    c.locs.push({ text: [[p.street, p.hnr].filter(Boolean).join(' '), [p.postcode, p.city].filter(Boolean).join(' ')].filter(Boolean).join(', '), tag: 'Hauptstandort' });
-    renderList($('d-locs'), c.locs, 'Noch kein Standort.');
-  });
-  $('addCon').addEventListener('click', async function () {
-    var f = $('cFirst').value.trim(), l = $('cLast').value.trim();
-    if (!f && !l) { $('cFirst').focus(); return; }
-    var c = lastCreated;
-    await sleep(200);
-    c.cons.push({ text: (f + ' ' + l).trim() });
-    $('cFirst').value = ''; $('cLast').value = '';
-    renderList($('d-cons'), c.cons, 'Noch kein Kontakt.');
-  });
-  $('again').addEventListener('click', function () { resetAll(); });
-
-  /* ---------- Zurücksetzen ---------- */
-  function resetAll() {
-    $('wiz').reset();
-    tok.level++;
-    attempted = {}; touched = {}; step = 1; maxStep = 1; lastCreated = null;
-    $('more').open = false;
-    $('done').hidden = true; $('wiz').hidden = false;
-    setMode('org');
-    loadOrgTypes();
-    initCommunities();
-    showStep(false);
-    update();
-  }
-
-  /* ---------- Start ---------- */
-  lockUnit();
-  setMode('org');
-  initCommunities();
-  showStep(false);
-  update();
-  Promise.all([loadOrgTypes(), loadLevelTypes()]).then(function () { setMode(mode); update(); });
-})();
-</script>
-
-</body></html>
+</html>
