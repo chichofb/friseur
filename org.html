@@ -347,6 +347,14 @@
       color: var(--muted);
     }
 
+    .tbl {
+      font: 400 12px/1.4 ui-monospace, Consolas, monospace;
+      letter-spacing: 0;
+      text-transform: none;
+      color: var(--muted);
+      margin-left: 6px;
+    }
+
     .err {
       font-size: 12px;
       color: var(--bad);
@@ -549,17 +557,26 @@
       <ol class="stepper" id="stepper" aria-label="Fortschritt"></ol>
 
       <section class="step" id="s-type" aria-labelledby="t-type">
-        <h2 id="t-type" tabindex="-1">Was legst du an?</h2>
-        <p class="sub">Die Art bestimmt, welche Schritte und Pflichtangaben folgen.</p>
+        <h2 id="t-type" tabindex="-1">Was legst du an?<span class="tbl">ua_level_type, ua_orgtype,
+            ua_organisation</span></h2>
+        <p class="sub">Die Ebene bestimmt, welche Arten zur Auswahl stehen. Die Art bestimmt die weiteren Schritte und
+          Pflichtangaben.</p>
+        <div class="field" id="f-levelType">
+          <label for="levelTypeId">Ebene <span class="req" id="r-levelTypeId">*</span><span
+              class="tbl">ua_level_type</span></label>
+          <select id="levelTypeId" aria-describedby="e-levelTypeId"></select>
+          <div class="err" id="e-levelTypeId"></div>
+        </div>
         <div class="field">
-          <span class="lbl" id="lbl-org">Organisationsart <span class="req" id="r-orgtypeId">*</span></span>
+          <span class="lbl" id="lbl-org">Organisationsart <span class="req" id="r-orgtypeId">*</span><span
+              class="tbl">ua_orgtype</span></span>
           <div class="choice" id="orgtypeId" role="radiogroup" aria-labelledby="lbl-org" aria-describedby="e-orgtypeId"
             tabindex="-1"></div>
           <label class="check"><input type="checkbox" id="privateOrg"> Nur private Organisationen anzeigen</label>
           <div class="err" id="e-orgtypeId"></div>
         </div>
         <div class="field span2" id="f-name">
-          <label for="name">Name <span class="req" id="r-name">*</span></label>
+          <label for="name">Name <span class="req" id="r-name">*</span><span class="tbl">ua_organisation</span></label>
           <input type="text" id="name" autocomplete="off" aria-describedby="e-name">
           <div class="hint" id="h-name"></div>
           <div class="err" id="e-name"></div>
@@ -584,36 +601,16 @@
         </details>
       </section>
 
-      <section class="step" id="s-level" aria-labelledby="t-level" hidden>
-        <h2 id="t-level" tabindex="-1">Wo gehört es hin?</h2>
-        <p class="sub" id="sub-level">Ordne die Organisation einer Einheit zu. Die Einheit ist mit deiner eigenen
-          vorbelegt, wenn es
-          sie gibt.</p>
-        <div class="fields" id="fields-level">
-          <div class="field" id="f-levelType">
-            <label for="levelTypeId">Ebene <span class="req" id="r-levelTypeId">*</span></label>
-            <select id="levelTypeId" aria-describedby="e-levelTypeId"></select>
-            <div class="err" id="e-levelTypeId"></div>
-          </div>
-          <div class="field" id="f-levelUnit">
-            <label for="levelUuid">Zugehörige Einheit</label>
-            <select id="levelUuid" aria-describedby="e-levelUuid"></select>
-            <div class="hint" id="h-levelUuid"></div>
-            <div class="err" id="e-levelUuid"></div>
-          </div>
-        </div>
-      </section>
-
       <section class="step" id="s-place" aria-labelledby="t-place" hidden>
-        <h2 id="t-place" tabindex="-1">Angaben</h2>
+        <h2 id="t-place" tabindex="-1">Angaben<span class="tbl">ua_organisation, ua_community</span></h2>
         <p class="sub">Name, Anschrift und Community. Pflichtangaben sind mit * markiert.</p>
         <div class="fields" id="fields-place">
           <div class="field span2" id="f-community">
-            <label for="communityId">Community <span class="req" id="r-communityId">*</span></label>
+            <label for="communityId">Community <span class="req" id="r-communityId">*</span><span
+                class="tbl">ua_community</span></label>
             <select id="communityId" aria-describedby="e-communityId">
               <option value="">– bitte wählen –</option>
             </select>
-            <button type="button" class="suggest" id="communitySuggest" hidden></button>
             <div class="err" id="e-communityId"></div>
           </div>
           <div class="field">
@@ -638,7 +635,8 @@
       </section>
 
       <section class="step" id="s-review" aria-labelledby="t-review" hidden>
-        <h2 id="t-review" tabindex="-1">Prüfen und anlegen</h2>
+        <h2 id="t-review" tabindex="-1">Prüfen und anlegen<span class="tbl">schreibt ua_organisation,
+            ua_level_organisation</span></h2>
         <p class="sub">Mit „Ändern“ springst du zum jeweiligen Schritt. Die Eingaben bleiben erhalten.</p>
         <div id="summary"></div>
       </section>
@@ -665,90 +663,56 @@
       'use strict';
       var $ = function (id) { return document.getElementById(id); };
       var sleep = function (ms) { return new Promise(function (r) { setTimeout(r, ms); }); };
-      var u = function (n) { return '7c1e5a20-3b4d-4e6f-8a9b-' + String(n).padStart(12, '0'); };
-      var UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
       /* ---------- Stammdaten (simulierte Backend-Antworten) ---------- */
+      /* ua_level_type mit den dazu erlaubten Organisationsarten. Annahme: fachlich zu bestätigen. */
       var LEVEL_TYPES = [
-        { value: -1, label: 'Keine Ebene' }, { value: 1, label: 'Bund' }, { value: 2, label: 'Land' },
-        { value: 3, label: 'Regierungsbezirk' }, { value: 4, label: 'Kreis' }, { value: 5, label: 'Gemeinde' },
-        { value: 6, label: 'Ortsteil' }, { value: 7, label: 'Krankenhaus' }, { value: 8, label: 'Leitstelle' }, { value: 9, label: 'Standort' }
+        { value: 2, label: 'Land', orgTypes: [4, 9] },
+        { value: 4, label: 'Regierungsbezirk', orgTypes: [4, 9] },
+        { value: 3, label: 'Kreis', orgTypes: [4, 3, 1, 9] },
+        { value: 6, label: 'Kreisfreie Stadt', orgTypes: [4, 5, 6, 3, 1, 9] },
+        { value: 5, label: 'Gemeinde', orgTypes: [4, 6, 1, 9] },
+        { value: 8, label: 'Krankenhaus-Verbund', orgTypes: [2] },
+        { value: 7, label: 'Krankenhaus', orgTypes: [2] },
+        { value: 9, label: 'Private Feuerwehren', orgTypes: [8] }
       ];
-      var LEVELS = {
-        1: [{ value: u(101), label: 'Bundesrepublik Deutschland' }],
-        2: [{ value: u(201), label: 'Nordrhein-Westfalen' }, { value: u(202), label: 'Hessen' }],
-        3: [{ value: u(301), label: 'Regierungsbezirk Düsseldorf' }, { value: u(302), label: 'Regierungsbezirk Köln' }],
-        4: [{ value: u(401), label: 'Kreis Mettmann' }, { value: u(402), label: 'Kreis Borken' }, { value: u(403), label: 'Kreis Paderborn' }],
-        5: [{ value: u(501), label: 'Erkrath' }, { value: u(502), label: 'Meerbusch' }, { value: u(503), label: 'Mettmann' }, { value: u(504), label: 'Hilden' }],
-        6: [{ value: u(601), label: 'Hochdahl' }, { value: u(602), label: 'Unterfeldhaus' }],
-        7: [{ value: u(701), label: 'Evangelisches Krankenhaus Mettmann' }],
-        8: [{ value: u(801), label: 'Kreisleitstelle Mettmann' }],
-        9: [{ value: u(901), label: 'Wache 1 Erkrath' }]
-      };
       var COMMUNITIES = [
+        { value: 148, label: 'Arnsberg' },
         { value: 1, label: 'Kreis Mettmann' }, { value: 2, label: 'Stadt Erkrath' }, { value: 3, label: 'Stadt Mettmann' },
         { value: 4, label: 'Stadt Meerbusch' }, { value: 5, label: 'Stadt Hilden' }, { value: 6, label: 'Kreis Borken' },
         { value: 7, label: 'Kreis Paderborn' }, { value: 8, label: 'Stadt Haan' }, { value: 9, label: 'Stadt Ratingen' }
       ];
 
       /* Profil je Organisationsart: community/location = 'none' | 'optional' | 'required'.
-         steps = Reihenfolge der Schritte (Standard: type, level, place, review).
-         level: 'type' = die Organisation ist selbst eine Einheit (nur Ebene-Typ wählen),
-         'optional' | 'required' = Zuordnung zu einer bestehenden Einheit.
-         Ohne Schritt 'level' steht das Ebene-Feld direkt im ersten Schritt. contact:false blendet Telefon/Fax/E-Mail aus.
-         Annahme: Die Profile sind fachlich zu bestätigen. levelTypes begrenzt die wählbaren Ebenen. */
+         steps = optionale abweichende Schrittfolge, contact:false blendet Telefon/Fax/E-Mail aus. */
       var ORG_TYPES = [
-        {
-          value: 8, label: 'Verwaltung', short: 'Neue Einheit: Ebene und Name', priv: false,
-          steps: ['type', 'review'], contact: false,
-          community: 'none', location: 'none', level: 'type', levelTypes: [2, 3, 4, 5]
-        },
-        {
-          value: 6, label: 'Freiwillige Feuerwehr', short: 'Mit Standort und Community', priv: false,
-          community: 'required', location: 'required', level: 'optional'
-        },
-        {
-          value: 5, label: 'Berufsfeuerwehr', short: 'Mit Standort und Community', priv: false,
-          community: 'required', location: 'required', level: 'optional'
-        },
-        {
-          value: 4, label: 'Werkfeuerwehr', short: 'Mit Standort und Community', priv: true,
-          community: 'required', location: 'required', level: 'optional'
-        },
-        {
-          value: 3, label: 'Leitstelle', short: 'Mit Standort und Community', priv: false,
-          community: 'required', location: 'required', level: 'optional'
-        },
-        {
-          value: 2, label: 'Krankenhaus', short: 'Angaben und Community, dann Ebene', priv: false,
-          steps: ['type', 'place', 'level', 'review'],
-          community: 'required', location: 'required', level: 'type'
-        },
-        {
-          value: 1, label: 'Hilfsorganisation', short: 'Mit Standort, Community optional', priv: true,
-          community: 'optional', location: 'required', level: 'optional'
-        }
+        { value: 4, label: 'Verwaltung', short: 'Mit Standort und Community', priv: false, community: 'required', location: 'required' },
+        { value: 6, label: 'Freiwillige Feuerwehr', short: 'Mit Standort und Community', priv: false, community: 'required', location: 'required' },
+        { value: 5, label: 'Berufsfeuerwehr', short: 'Mit Standort und Community', priv: false, community: 'required', location: 'required' },
+        { value: 8, label: 'Werkfeuerwehr', short: 'Mit Standort und Community', priv: true, community: 'required', location: 'required' },
+        { value: 3, label: 'Leitstelle', short: 'Mit Standort und Community', priv: false, community: 'required', location: 'required' },
+        { value: 2, label: 'Krankenhaus', short: 'Mit Standort und Community', priv: false, community: 'required', location: 'required' },
+        { value: 1, label: 'Hilfsorganisation', short: 'Mit Standort, Community optional', priv: true, community: 'optional', location: 'required' },
+        { value: 9, label: 'Sonstige', short: 'Mit Standort, Community optional', priv: false, community: 'optional', location: 'required' }
       ];
-      var DEFAULT_PROFILE = { community: 'required', location: 'required', level: 'optional' };
+      var DEFAULT_PROFILE = { community: 'required', location: 'required' };
       var orgLabel = function (id) { var t = ORG_TYPES.filter(function (x) { return x.value === id; })[0]; return t ? t.label : ''; };
-      var levelLabel = function (id) { var t = LEVEL_TYPES.filter(function (x) { return x.value === id; })[0]; return t ? t.label : ''; };
+      var levelTypeOf = function (id) { return LEVEL_TYPES.filter(function (x) { return String(x.value) === String(id); })[0]; };
+      var levelLabel = function (id) { var t = levelTypeOf(id); return t ? t.label : ''; };
 
       /* ---------- API ---------- */
       function simulate(compute) { return sleep(200 + Math.random() * 260).then(compute); }
-      function getOrgTypes(onlyPrivate) {
-        return simulate(function () { return ORG_TYPES.filter(function (o) { return !onlyPrivate || o.priv; }); });
-      }
-      function getLevelTypes() { return simulate(function () { return LEVEL_TYPES; }); }
-      function getLevels(levelTypeId) {
+      function getOrgTypes(onlyPrivate, levelTypeId) {
         return simulate(function () {
-          var list = LEVELS[levelTypeId] || [];
-          /* Annahme: defaultValue ist die eigene Einheit des Nutzers. */
-          return { options: list, defaultValue: levelTypeId >= 4 && list.length ? list[0].value : undefined };
+          var lt = levelTypeOf(levelTypeId);
+          return ORG_TYPES.filter(function (o) { return lt && lt.orgTypes.indexOf(o.value) > -1 && (!onlyPrivate || o.priv); });
         });
       }
+      function getLevelTypes() { return simulate(function () { return LEVEL_TYPES; }); }
       function getCommunities() { return simulate(function () { return COMMUNITIES; }); }
 
       /* Ohne erreichbaren Server (z. B. file://) wird das Anlegen simuliert. */
+      /* Das Backend legt ua_organisation und ua_level_organisation in einer Transaktion an. */
       async function send(payload) {
         var res;
         try {
@@ -757,7 +721,7 @@
           });
         } catch (err) {
           await sleep(400);
-          return { simulated: true, status: 201, body: { orgUuid: u(9000 + Math.floor(Math.random() * 900)) } };
+          return { simulated: true, status: 201, body: { orgId: 9000 + Math.floor(Math.random() * 900) } };
         }
         if (!res.ok) throw new Error('Anlegen fehlgeschlagen (' + res.status + ').');
         var body = await res.json().catch(function () { return {}; });
@@ -767,23 +731,23 @@
       /* ---------- Zustand ---------- */
       var step = 1, maxStep = 1, orgtype = '';
       var attempted = {}, touched = {};
-      var allLevelTypes = [], communityOptions = [], lastSuggestKey = '';
-      var tok = { org: 0, level: 0 };
+      var communityOptions = [];
+      var tok = { org: 0 };
 
-      var cfg = function () { return ORG_TYPES.filter(function (o) { return String(o.value) === orgtype; })[0] || DEFAULT_PROFILE; };
+      var cfg = function () {
+        return ORG_TYPES.filter(function (o) { return String(o.value) === orgtype; })[0] || DEFAULT_PROFILE;
+      };
 
       /* ---------- Schritte und Felder: einzige Quelle für Ablauf, Validierung, Body und Zusammenfassung ---------- */
-      var DEFAULT_STEPS = ['type', 'level', 'place', 'review'];
+      var DEFAULT_STEPS = ['type', 'place', 'review'];
       var STEPS = [
-        { id: 'type', label: function (c) { return stepActive('place', c) ? 'Art' : 'Art & Name'; } },
-        { id: 'level', label: function (c) { return c.level === 'type' ? 'Ebene' : 'Zuordnung'; } },
-        { id: 'place', label: function () { return 'Angaben'; } },
+        { id: 'type', tables: 'ua_level_type, ua_orgtype', label: function (c) { return stepActive('place', c) ? 'Ebene & Art' : 'Ebene, Art & Name'; } },
+        { id: 'place', tables: 'ua_organisation, ua_community', label: function () { return 'Angaben'; } },
         { id: 'review', label: function () { return 'Prüfen'; } }
       ];
       var stepIds = function (c) { return c.steps || DEFAULT_STEPS; };
       var activeSteps = function (c) { return stepIds(c).map(function (id) { return STEPS.filter(function (s) { return s.id === id; })[0]; }); };
       var stepActive = function (id, c) { return stepIds(c).indexOf(id) > -1; };
-      var hasUnit = function (c) { return c.level === 'optional' || c.level === 'required'; };
 
       var txt = function (id) { return $(id).value.trim() || undefined; };
       var num = function (id) { var v = $(id).value; return v === '' ? undefined : Number(v); };
@@ -795,27 +759,16 @@
 
       var FIELDS = [
         {
+          key: 'levelTypeId', step: 'type', el: 'levelTypeId', label: 'Ebene', read: function () { return num('levelTypeId'); },
+          req: function () { return true; }, msg: 'Bitte eine Ebene wählen.', show: levelLabel
+        },
+        {
           key: 'orgtypeId', step: 'type', el: 'orgtypeId', label: 'Art', read: function () { return orgtype === '' ? undefined : Number(orgtype); },
           req: function () { return true; }, msg: 'Bitte eine Organisationsart wählen.', show: orgLabel
         },
         {
           key: 'name', step: placeOrType, el: 'name', label: 'Name', read: function () { return txt('name'); },
           req: function () { return true; }, msg: 'Bitte einen Namen eingeben.'
-        },
-        {
-          key: 'levelTypeId', step: function (c) { return stepActive('level', c) ? 'level' : 'type'; }, el: 'levelTypeId', label: 'Ebene', keep: true,
-          read: function () { return num('levelTypeId'); },
-          req: function (c) { return c.level === 'required' || c.level === 'type'; }, msg: 'Bitte eine Ebene wählen.', show: levelLabel
-        },
-        {
-          key: 'levelUuid', step: 'level', el: 'levelUuid', label: 'Einheit', keep: true, on: hasUnit, read: function () { return $('levelUuid').value || undefined; },
-          req: function (c, v) {
-            var s = $('levelUuid');
-            return v.levelTypeId !== undefined && (!s.disabled || s.getAttribute('aria-busy') === 'true');
-          },
-          msg: 'Bitte eine Einheit wählen.',
-          check: function (v) { return UUID.test(v) ? '' : 'Die Einheit hat keine gültige UUID.'; },
-          show: function () { return selText($('levelUuid')); }
         },
 
         {
@@ -872,7 +825,6 @@
 
       /* ---------- Select-Helfer ---------- */
       function lock(sel, text) { sel.innerHTML = ''; sel.appendChild(new Option(text, '')); sel.disabled = true; sel.setAttribute('aria-busy', 'true'); }
-      function lockStatic(sel, text) { lock(sel, text); sel.removeAttribute('aria-busy'); }
       function fill(sel, options, placeholder, keep) {
         sel.innerHTML = '';
         sel.appendChild(new Option(placeholder, ''));
@@ -898,9 +850,15 @@
         });
       }
       async function loadOrgTypes() {
-        var my = ++tok.org, grid = $('orgtypeId');
+        var my = ++tok.org, grid = $('orgtypeId'), lt = $('levelTypeId').value;
+        if (lt === '') {
+          orgtype = '';
+          grid.innerHTML = '<div class="hint">Wähle zuerst eine Ebene.</div>';
+          onTypeChange();
+          return;
+        }
         grid.innerHTML = '<div class="hint">Lädt …</div>';
-        var list = await getOrgTypes($('privateOrg').checked);
+        var list = await getOrgTypes($('privateOrg').checked, lt);
         if (my !== tok.org) return;
         var gone = !list.some(function (o) { return String(o.value) === orgtype; });
         if (gone) orgtype = '';
@@ -918,58 +876,31 @@
           if (e && 'value' in e) e.value = '';
           delete touched[f.key];
         });
-        if (!hasUnit(c)) { delete $('levelUuid').dataset.preset; lockUnit(); }
-        if (!stepActive('place', c) || c.community === 'none') { $('communitySuggest').hidden = true; lastSuggestKey = ''; }
-        fillLevelTypes();
-        var lt = $('levelTypeId').value;
-        if (hasUnit(c) && lt !== '' && loadedFor !== lt) onLevelType();
         var n = activeSteps(c).length;
         step = Math.min(step, n); maxStep = Math.min(maxStep, n);
         showStep(false);
         update();
       }
 
-      /* ---------- Ebene und Einheit ---------- */
-      var loadedFor = '';
-      /* Name, Ebene-Feld und Kontaktdaten wandern je nach Ablauf in den passenden Schritt. */
+      /* ---------- Ebene ---------- */
+      /* Name und Kontaktdaten wandern je nach Ablauf in den passenden Schritt. */
       function layout(c) {
         var place = stepActive('place', c), type = $('s-type');
-        var name = $('f-name'), lt = $('f-levelType'), more = $('more'), fp = $('fields-place'), fl = $('fields-level');
+        var name = $('f-name'), more = $('more'), fp = $('fields-place');
         if (place) fp.insertBefore(name, fp.firstChild); else type.appendChild(name);
-        if (stepActive('level', c)) fl.insertBefore(lt, fl.firstChild); else type.appendChild(lt);
         (place ? $('s-place') : type).appendChild(more);
       }
-      function fillLevelTypes() {
-        var c = cfg(), sel = $('levelTypeId'), cur = sel.value;
-        var list = allLevelTypes.filter(function (t) { return t.value !== -1 && (!c.levelTypes || c.levelTypes.indexOf(t.value) > -1); });
-        fill(sel, list, c.level === 'optional' ? '– keine Angabe –' : '– bitte wählen –', cur);
-        if (sel.value !== cur) { delete $('levelUuid').dataset.preset; lockUnit(); onUnitChange(); }
-      }
       async function loadLevelTypes() {
-        lock($('levelTypeId'), 'Lädt …');
-        allLevelTypes = await getLevelTypes();
-        fillLevelTypes();
-        update();
-      }
-      function lockUnit() {
-        loadedFor = '';
-        lockStatic($('levelUuid'), $('levelTypeId').value === '' ? 'Erst Ebene wählen' : 'Keine Einheit');
-      }
-      async function onLevelType() {
-        var v = $('levelTypeId').value, sel = $('levelUuid'), my = ++tok.level;
-        delete sel.dataset.preset;
-        if (v === '' || cfg().level === 'type') { lockUnit(); onUnitChange(); update(); return; }
-        loadedFor = v;
+        var sel = $('levelTypeId');
         lock(sel, 'Lädt …');
-        update();
-        var r = await getLevels(Number(v));
-        if (my !== tok.level) return;
-        fill(sel, r.options, '– bitte wählen –');
-        if (r.defaultValue) { sel.value = String(r.defaultValue); sel.dataset.preset = '1'; }
-        onUnitChange();
+        fill(sel, await getLevelTypes(), '– bitte wählen –');
         update();
       }
-      function onUnitChange() { suggestCommunity(); }
+      /* Die Ebene filtert die Organisationsarten. */
+      function onLevelType() {
+        onTypeChange();
+        loadOrgTypes();
+      }
 
       /* ---------- Community ---------- */
       async function loadCommunities() {
@@ -977,19 +908,6 @@
         var sel = $('communityId');
         fill(sel, communityOptions, '– bitte wählen –', sel.value);
       }
-      function suggestCommunity() {
-        var btn = $('communitySuggest'), label = selText($('levelUuid'));
-        if (cfg().community === 'none' || $('communityId').value || !label || $('levelUuid').disabled) { btn.hidden = true; return; }
-        if (label === lastSuggestKey) return;
-        lastSuggestKey = label;
-        var s = label.toLowerCase();
-        var hit = communityOptions.filter(function (c) { return c.label.toLowerCase().indexOf(s) > -1; })[0];
-        if (!hit) { btn.hidden = true; return; }
-        btn.textContent = 'Vorschlag übernehmen: ' + hit.label;
-        btn.onclick = function () { $('communityId').value = String(hit.value); btn.hidden = true; update(); };
-        btn.hidden = false;
-      }
-      $('communityId').addEventListener('change', function () { $('communitySuggest').hidden = true; });
 
       /* ---------- Fortschritt und Navigation ---------- */
       function renderStepper(steps) {
@@ -1055,6 +973,7 @@
           var sec = document.createElement('div'); sec.className = 'sumsec';
           var head = document.createElement('div'); head.className = 'sumhead';
           var h = document.createElement('h3'); h.textContent = s.label(c);
+          var tb = document.createElement('span'); tb.className = 'tbl'; tb.textContent = s.tables; h.appendChild(tb);
           var b = document.createElement('button'); b.type = 'button'; b.className = 'btn link'; b.textContent = 'Ändern';
           b.addEventListener('click', function () { goTo(i + 1); });
           head.appendChild(h); head.appendChild(b); sec.appendChild(head);
@@ -1085,16 +1004,7 @@
           if (el) { if (show) el.setAttribute('aria-invalid', 'true'); else el.removeAttribute('aria-invalid'); }
         });
         $('f-community').hidden = c.community === 'none';
-        $('f-levelUnit').hidden = !hasUnit(c);
         $('more').hidden = !hasContact(c);
-        $('h-name').textContent = c.level === 'type' && !stepActive('level', c) ? 'Name der neuen Einheit, z. B. „Kreis Mettmann“.' : '';
-        $('t-level').textContent = hasUnit(c) ? 'Wo gehört es hin?' : 'Welche Ebene?';
-        $('sub-level').textContent = hasUnit(c)
-          ? 'Ordne die Organisation einer Einheit zu. Die Einheit ist mit deiner eigenen vorbelegt, wenn es sie gibt.'
-          : 'Wähle die Ebene der Organisation.';
-        var hl = $('h-levelUuid');
-        if ($('levelTypeId').value === '') hl.textContent = 'Wähle zuerst eine Ebene.';
-        else hl.textContent = $('levelUuid').dataset.preset === '1' ? 'Vorbelegt mit deiner eigenen Einheit.' : '';
         var steps = activeSteps(c), cur = steps[step - 1];
         var remaining = cur.id === 'review' ? 0 : stepErrors(cur.id, errs).length;
         var st = $('status');
@@ -1103,7 +1013,6 @@
       }
       function markTouched(t) { var k = t && EL2KEY[t.id]; if (k) touched[k] = true; }
       $('levelTypeId').addEventListener('change', function () { onLevelType(); });
-      $('levelUuid').addEventListener('change', function () { delete $('levelUuid').dataset.preset; lastSuggestKey = ''; onUnitChange(); });
       $('privateOrg').addEventListener('change', loadOrgTypes);
       $('wiz').addEventListener('input', update);
       $('wiz').addEventListener('change', function (e) { markTouched(e.target); update(); });
@@ -1125,7 +1034,7 @@
         $('d-status').textContent = res.status + ' Created' + (res.simulated ? ' · simuliert, es wurde nichts gesendet' : '');
         $('d-name').textContent = p.name;
         var list = rows(null, vals, c, false);
-        if (res.body && res.body.orgUuid) list.push(['orgUuid', String(res.body.orgUuid)]);
+        if (res.body && res.body.orgId) list.push(['org_id', String(res.body.orgId)]);
         kvList(list, $('d-list'));
         $('done').scrollIntoView({ block: 'nearest' });
       }
@@ -1133,16 +1042,10 @@
 
       function resetAll() {
         $('wiz').reset();
-        tok.level++;
-        attempted = {}; touched = {}; step = 1; maxStep = 1; orgtype = ''; lastSuggestKey = '';
+        attempted = {}; touched = {}; step = 1; maxStep = 1; orgtype = '';
         layout(cfg());
         $('more').open = false;
         $('done').hidden = true; $('wiz').hidden = false;
-        $('communitySuggest').hidden = true;
-        delete $('levelUuid').dataset.preset;
-        fillLevelTypes();
-        $('levelTypeId').value = '';
-        lockUnit();
         loadOrgTypes();
         showStep(false);
         update();
@@ -1160,7 +1063,6 @@
       /* ---------- Start ---------- */
       applyTheme();
       layout(cfg());
-      lockUnit();
       showStep(false);
       update();
       Promise.all([loadOrgTypes(), loadLevelTypes(), loadCommunities()]).then(update);
